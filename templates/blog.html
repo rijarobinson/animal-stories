@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<form method = "post">
+			<h1>
+			Adventures in Dog Walking
+		</h1>
+
+
+{% set i = 0 %}
+{% for post in posts %}
+		<div class = "post">
+			<div class = "post-title">{{ post.title }}, {{ post.created }}</div>
+			<hr>
+			<pre class = "post-body">{{ post.blog_post_text }}</pre>
+		</div>
+{% endfor %}
+
+
+
+</form>
+
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+<p>Welcome to our Animal Stories forum! Please share your (clean) stories about animal companions: funny, sad, gross...we want to hear them all! Enjoy our latest posts here.
+{% block content %}
+
+  {% for p in posts %}
+    {{ p.render() | safe }}
+    <br><br>
+  {% endfor %}
+
+{% endblock %}
