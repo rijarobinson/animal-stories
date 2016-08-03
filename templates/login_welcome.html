@@ -2,8 +2,11 @@
 
 {% block content %}
 
-<form method = "post">
+<form action = "newpost">
 	<h2>Welcome back, {{ username }}!</h2>
+    Poster: {{ poster }}
+    <input type = "hidden" name = "poster" value = {{ poster }}>
+    <input type = "submit" value = "Create a New Post">
 
 
 
