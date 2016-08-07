@@ -1,20 +1,39 @@
 <!doctype html>
-<html>
+<html lang = "en">
 <head>
-  <link rel="stylesheet" href="/css/styles.css"/>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//normalize-css.googlecode.com/svn/trunk/normalize.css">
+    <link rel="stylesheet" href="/css/styles.css"/>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,400italic,700,700italic,900,900italic" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Baloo+Da" rel="stylesheet">
+
 
   <title>Animal Stories</title>
 </head>
 
 <body>
-  <a href="/blog" class="main-title">
-    Animal Stories
-  </a>
-
-  <div id="content">
-  {% block content %}
-  {% endblock %}
+    <div class = "container">
+        <div class = "row">
+      <a href="/blog" class="main-title">
+        Animal Stories
+      </a>
   </div>
+
+      <div id="content">
+      {% block content %}
+      {% endblock %}
+      </div>
+        <div class="text-right">
+        <a href="http://www.github.com/rijarobinson" class="fontawesome-github"></a>
+        <a href="https://www.linkedin.com/in/marijarob" class="fontawesome-linkedin-sign"></a>
+        <a href="mailto:marija@springmail.com" class="fontawesome-envelope"></a>
+        <a href="http://www.plus.google.com" class="zocial-googleplus"></a>
+        </div>
+    </div>
+
 </body>
 
 </html>

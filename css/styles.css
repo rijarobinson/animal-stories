@@ -1,7 +1,116 @@
-hr {
-    margin: 20px auto;
+@import url(http://weloveiconfonts.com/api/?family=zocial);
+@import url(http://weloveiconfonts.com/api/?family=fontawesome);
+
+/*special fonts styling*/
+
+[class*="zocial-"]:before {
+  font-family: "zocial", sans-serif;
+  text-shadow: 5px 5px 5px #aaa;
+  width: 5vw;
+  font-size: 40px;
+  text-align: right;
 }
 
+[class*="fontawesome-"]:before {
+  font-family: "fontawesome", sans-serif;
+  text-shadow: 5px 5px 5px #aaa;
+  width: 5vw;
+  font-size: 40px;
+  text-align: right;
+}
+
+* {
+  font-family: "Lato", sans-serif;
+  background-color: #99a;
+  align-self: left;
+  text-align: left;
+}
+
+/*row styling*/
+
+.row {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+}
+
+/*text/paragraph styling*/
+
+h1 {
+  font-family: "Baloo Da", sans-serif;
+  font-size: 48px;
+  margin-bottom: 0;
+}
+
+h2 {
+  text-align: left;
+}
+
+h4 {
+  color: #fff;
+  margin: 0;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+p {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+figcaption {
+  font-size: 20px;
+}
+
+/*image styling*/
+
+img {
+  border-radius: 75px;
+  border: 4px solid #3cf;
+  vertical-align: left;
+  position: relative;
+  max-width: 100%;
+}
+
+.img-plain {
+  border-radius: 0;
+  border: 0;
+  vertical-align: left;
+  position: relative;
+  max-width: 100%;
+}
+
+object, video {
+  max-width: 100%;
+}
+
+/*link styling*/
+
+a:link {
+  color: #000;
+  text-decoration: none;
+}
+
+a:visited {
+  color: #009;
+}
+
+a:hover {
+  color: #000;
+  background-color: #3cf;
+}
+
+hr {
+  border: none;
+  height: 4px;
+  background-color: #3cf;
+}
+
+/*hr {
+    margin: 20px auto;
+}
+*/
 body {
     font-family: Helvetica, Arial, sans-serif;
     font-size: 14px;
@@ -11,7 +120,7 @@ body {
     padding: 10px;
     color: #333;
 }
-
+/*
 h1 {
     background-color: #ddd;
     color: #888;
@@ -25,7 +134,7 @@ h2 {
     font-weight: bold;
     margin-bottom: 20px;
 }
-
+*/
 .error {
     color: red;
 }
@@ -44,6 +153,7 @@ input[type=text] {
     font-size: 20px;
     padding: 2px;
     font-family: monospace;
+    background-color: #fff;
 }
 
 textarea {
@@ -51,10 +161,12 @@ textarea {
   height: 400px;
   font-size: 17px;
   font-family: monospace;
+  background-color: #fff;
 }
 
 input[type=submit] {
   font-size: 24px;
+  background-color: #fff;
 }
 
 .main-title {
@@ -62,7 +174,7 @@ input[type=submit] {
     color: #222;
     font-size: 40px;
     font-weight: bold;
-    text-align: center;
+    text-align: left;
     margin-bottom: 30px;
     text-decoration: none;
 }
@@ -73,7 +185,7 @@ input[type=submit] {
 
 .post-body {
     margin: 0;
-    font-size: 17px;
+    font-size: 25px;
 }
 
 
@@ -91,7 +203,9 @@ input[type=submit] {
     position: absolute;
     right: 0px;
     bottom: 0px;
-    color: #999;
+    color: #3cf;
+    font-style: italic;
+    font-size: 20px;
 
 }
 

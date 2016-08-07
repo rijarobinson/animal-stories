@@ -1,10 +1,19 @@
 {% extends "base.html" %}
-<p>Welcome to our Animal Stories forum! Please share your (clean) stories about animal companions: funny, sad, gross...we want to hear them all! Enjoy our latest posts here.
+
 {% block content %}
 
+<p>Welcome to our Animal Stories forum! Please share your (clean) stories about animal companions: funny, sweet, sad, even gross! We want to hear them all! Enjoy our latest posts here.</p>
+
+
   {% for p in posts %}
+<!--     <div class = "row">
+        <div class = "col-md-12"> -->
     {{ p.render() | safe }}
+<!--     <br>Need to add edit/delete/like button. Users can only like other peoples' posts, and can only delete/edit their own.
+    <br>Need to add functionality for comments. -->
     <br><br>
+<!-- </div>
+    </div> -->
   {% endfor %}
 
 {% endblock %}

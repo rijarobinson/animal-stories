@@ -109,6 +109,7 @@ class BlogHandler(webapp2.RequestHandler):
 def render_post(response, post):
     response.out.write("<b>" + post.subject + "</b><br>")
     response.out.write(post.content)
+    response.out.write(post.poster)
 
 class MainPage(BlogHandler):
   def get(self):
@@ -138,8 +139,10 @@ class Post(db.Model):
 
 class BlogFront(BlogHandler):
     def get(self):
-        # posts = Post.all().order('-created')
-        # self.render('front.html', posts = posts)
+        # need to add "+1" button for people to like. Don't let users like their own post and error message
+        # if they do (use a modal?? or just easy, use other error messages as a model)
+#        posts = Post.all().order('-created')
+#        self.render('front.html', posts = posts)
         posts = db.GqlQuery("select * from Post order by created desc limit 10")
         self.render("front.html", posts = posts)
 
@@ -162,36 +165,38 @@ class NewPost(BlogHandler):
     # if the user is logged in, go to the newpost page, otherwise,
     # redirect to login
 
-    # trying to create a newpost button and pass the username
-    # so we can attach the user to the post
     def get(self):
-#        if self.user:
-        poster = self.request.get("poster")
+
+    #  TODO: make an error message if person tries to access directly without logging in
+
+    # if not username:
+    #     self.redirect("/login")
+    # else:
+        poster = self.request.get("username")
         self.render("newpost.html", poster = poster)
-#        else:
-#            self.redirect("/login")
+
 
     # upon submission of new post: if the user is logged out
     # go to the front page of blog, otherwise, check to see
     # if content is valid, if so redirect to the new post permalink
     # page
     def post(self):
-        # if not self.user:
+
+        poster = self.request.get("poster")
+#  TODO: make an error message if person tries to access directly without logging in
+        # if not poster:
         #     self.redirect("/blog")
 
         subject = self.request.get("subject")
         content = self.request.get("content")
-        poster = self.request.get("poster")
 
         if subject and content:
-            # TODO: improve by seeing if I can get the key
-            # directly from cookie or previous pages
             p = Post(parent = blog_key(), subject = subject, content = content, poster = poster)
             p.put()
             self.redirect("/blog/%s" % str(p.key().id()))
         else:
             error = "Please enter both a subject and content."
-            self.render("newpost.html", subject = subject, content = content, error = error)
+            self.render("newpost.html", subject = subject, content = content, poster = poster, error = error)
 
 # functions to validate username, password, and email
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
@@ -278,6 +283,10 @@ class Login(BlogHandler):
     def get(self):
         self.render("login.html")
 
+# TODO for project evaluation: login_welcome and signup_welcome need to be the same page.
+# If anyone tries to access either of these pages without being logged in, redirect them to sign-up
+# or sign-in page
+
     def post(self):
         have_error = False
         username = self.request.get("username")
@@ -300,7 +309,7 @@ class Login(BlogHandler):
    # then dress it up
                 my_key = str(user.key().id())
                 self.set_secure_cookie("user_id", my_key)
-                self.render("login_welcome.html", username = username, poster = my_key)
+                self.render("login_welcome.html", username = username)
             else:
                 params['error_password'] = "Please check your password."
                 have_error = True
