@@ -85,10 +85,7 @@ class BlogHandler(webapp2.RequestHandler):
         self.response.out.write(*a, **kw)
 
     def render_str(self, template, **params):
-
-## this is a problem line of code. Need to see where it is used
-## and fix if necessary
-#        params['user'] = self.user
+        params["user"] = self.request.get("username")
         return render_str(template, **params)
 
     def render(self, template, **kw):
@@ -100,11 +97,15 @@ class BlogHandler(webapp2.RequestHandler):
             "Set-Cookie",
             "%s = %s; Path = /" % (name,cookie_val))
 
+
     def login(self, user):
         self.set_secure_cookie("user_id", str(user.key().id()))
 
-    def logout(self):
-        self.response.headers.add_header("Set-Cookie", "user_id=; Path=/")
+
+
+#    def logout(self):
+#        self.response.headers.add_header("Set-Cookie", "user_id=; Path=/")
+
 
 def render_post(response, post):
     response.out.write("<b>" + post.subject + "</b><br>")
@@ -143,8 +144,10 @@ class BlogFront(BlogHandler):
         # if they do (use a modal?? or just easy, use other error messages as a model)
 #        posts = Post.all().order('-created')
 #        self.render('front.html', posts = posts)
+        logged_in = self.request.cookies.get("user_id")
+        current_user = self.request.cookies.get("current_user")
         posts = db.GqlQuery("select * from Post order by created desc limit 10")
-        self.render("front.html", posts = posts)
+        self.render("front.html", posts = posts, logged_in = logged_in, current_user = current_user)
 
 # get the selected post from the current blog
 
@@ -168,12 +171,12 @@ class NewPost(BlogHandler):
     def get(self):
 
     #  TODO: make an error message if person tries to access directly without logging in
-
-    # if not username:
-    #     self.redirect("/login")
-    # else:
         poster = self.request.get("username")
-        self.render("newpost.html", poster = poster)
+        if not poster:
+            self.redirect("/blog")
+        else:
+#        poster = self.request.get("username")
+            self.render("newpost.html", poster = poster)
 
 
     # upon submission of new post: if the user is logged out
@@ -309,6 +312,10 @@ class Login(BlogHandler):
    # then dress it up
                 my_key = str(user.key().id())
                 self.set_secure_cookie("user_id", my_key)
+                this_user = str(username)
+                self.response.headers.add_header(
+                    "Set-Cookie",
+                    "%s = %s; Path = /" % ("current_user", this_user))
                 self.render("login_welcome.html", username = username)
             else:
                 params['error_password'] = "Please check your password."
@@ -318,6 +325,7 @@ class Login(BlogHandler):
 class Logout(BlogHandler):
     def get(self):
             self.response.headers.add_header("Set-Cookie", "user_id=; Path=/")
+            self.response.headers.add_header("Set-Cookie", "current_user=; Path=/")
             self.redirect("/blog")
 
 

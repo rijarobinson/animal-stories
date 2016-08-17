@@ -6,14 +6,24 @@
 
 
   {% for p in posts %}
-<!--     <div class = "row">
-        <div class = "col-md-12"> -->
     {{ p.render() | safe }}
 <!--     <br>Need to add edit/delete/like button. Users can only like other peoples' posts, and can only delete/edit their own.
     <br>Need to add functionality for comments. -->
-    <br><br>
-<!-- </div>
-    </div> -->
-  {% endfor %}
+            <div class="row">
+            <div class="col-md-8">
+            </div>
+            <div class="col-md-4 text-right">
+        Click to Wag at this post.<br>
+        {% if not logged_in %}
+            <input type="image" src="../images/wag_button_disabled.png" alt="Sign up or log in to Wag at posts!" name = "disabled_wag" title = "Sign up or log in to Wag at posts!" action = "" disabled>
+        {% elif current_user == p.poster %}
+          <input type="image" src="../images/wag_button_disabled.png" alt="You can't wag at your own posts, sorry!" name = "disabled_wag" title = "Sorry, you can't Wag at your own posts!" action = "" disabled>
+        {% else %}
+          <input type="image" src="../images/wag_button.png" alt="Click to Wag at this post" name = "wag_at_post" title = "Click to Wag at this post" action = "">
 
+        {% endif %}
+          <br><br>
+        </div>
+    </div>
+  {% endfor %}
 {% endblock %}
