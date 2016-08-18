@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+<form method = "post">
 <p>Welcome to our Animal Stories forum! Please share your (clean) stories about animal companions: funny, sweet, sad, even gross! We want to hear them all! Enjoy our latest posts here.</p>
 
 
@@ -15,15 +15,21 @@
             <div class="col-md-4 text-right">
         Click to Wag at this post.<br>
         {% if not logged_in %}
-            <input type="image" src="../images/wag_button_disabled.png" alt="Sign up or log in to Wag at posts!" name = "disabled_wag" title = "Sign up or log in to Wag at posts!" action = "" disabled>
+            <img src="../images/wag_button_disabled.png" alt="Sign up or log in to Wag at posts!" name = "disabled_wag" title = "Sign up or log in to Wag at posts!">
         {% elif current_user == p.poster %}
-          <input type="image" src="../images/wag_button_disabled.png" alt="You can't wag at your own posts, sorry!" name = "disabled_wag" title = "Sorry, you can't Wag at your own posts!" action = "" disabled>
+          <img src="../images/wag_button_disabled.png" alt="You can't wag at your own posts, sorry!" name = "disabled_wag" title = "Sorry, you can't Wag at your own posts!">
         {% else %}
-          <input type="image" src="../images/wag_button.png" alt="Click to Wag at this post" name = "wag_at_post" title = "Click to Wag at this post" action = "">
+          <input type="image" src="../images/wag_button.png" alt="Click to Wag at this post" name = "wag_at_post" value = "add_wag" title = "Click to Wag at this post" onClick = "this.form.submit();">
 
         {% endif %}
-          <br><br>
+          <br>
+        {% if p.wags == 1 %}
+            {{ p.wags }} Wag
+        {% else %}
+            {{ p.wags }} Wags<br>
+        {% endif %}
         </div>
     </div>
   {% endfor %}
+</form>
 {% endblock %}

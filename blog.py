@@ -53,6 +53,10 @@ class User(db.Model):
         if u and valid_pw(name, pw, u.pw_hash):
             return u
 
+class Wags(db.Model):
+    wagged_user = db.StringProperty()
+    wagged_post = db.IntegerProperty()
+
 # generate random string for password
 def make_salt(length = 5):
     return "".join(random.choice(string.lowercase) for i in range(length))
@@ -98,8 +102,8 @@ class BlogHandler(webapp2.RequestHandler):
             "%s = %s; Path = /" % (name,cookie_val))
 
 
-    def login(self, user):
-        self.set_secure_cookie("user_id", str(user.key().id()))
+#    def login(self, user):
+#        self.set_secure_cookie("user_id", str(user.key().id()))
 
 
 
@@ -130,6 +134,7 @@ class Post(db.Model):
     last_modified = db.DateTimeProperty(auto_now = True)
     # added this field to track which posts belong to user
     poster = db.StringProperty(required = True)
+    wags = db.IntegerProperty(default = 0)
 
 # show the post page and content, replacing hard returns with html <br>
     def render(self):
@@ -148,6 +153,23 @@ class BlogFront(BlogHandler):
         current_user = self.request.cookies.get("current_user")
         posts = db.GqlQuery("select * from Post order by created desc limit 10")
         self.render("front.html", posts = posts, logged_in = logged_in, current_user = current_user)
+
+
+#this is adding records but not returning to front properly. Note the hardcoded variables here. Posts table is not being updated
+#with wag var.
+    def post(self):
+        wagged_user = self.request.cookies.get("current_user")
+        wagged_post = 4993981813358592
+        wags = 1
+        p = Wags(parent = blog_key(), wagged_user = wagged_user, wagged_post = wagged_post)
+        p.put()
+#see google search on how to update a record
+        x.put()
+        logged_in = self.request.cookies.get("user_id")
+        current_user = self.request.cookies.get("current_user")
+        posts = db.GqlQuery("select * from Post order by created desc limit 10")
+        self.render("front.html", posts = posts, logged_in = logged_in, current_user = current_user)
+
 
 # get the selected post from the current blog
 
@@ -171,7 +193,7 @@ class NewPost(BlogHandler):
     def get(self):
 
     #  TODO: make an error message if person tries to access directly without logging in
-        poster = self.request.get("username")
+        poster = self.request.get("poster")
         if not poster:
             self.redirect("/blog")
         else:
@@ -335,6 +357,7 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/([0-9]+)', PostPage),
                                ('/blog/newpost', NewPost),
                                ('/blog/login', Login),
-                               ('/blog/logout', Logout)
+                               ('/blog/logout', Logout),
+#                               ('/blog/addwag', AddWag)
                                ],
                               debug=True)
