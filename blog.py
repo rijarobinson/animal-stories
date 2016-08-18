@@ -55,7 +55,30 @@ class User(db.Model):
 
 class Wags(db.Model):
     wagged_user = db.StringProperty()
-    wagged_post = db.IntegerProperty()
+    wagged_post = db.StringProperty()
+    created = db.DateTimeProperty(auto_now_add = True)
+    last_modified = db.DateTimeProperty(auto_now = True)
+
+class AddWag(webapp2.RequestHandler):
+#this is adding records but not returning to front properly. Note the hardcoded variables here. Posts table is not being updated
+#with wag var.
+    def post(self):
+        wagged_user = self.request.cookies.get("current_user")
+        wagged_post = self.request.get("post_key")
+        p = Wags(parent = blog_key(), wagged_user = wagged_user, wagged_post = wagged_post)
+        p.put()
+
+# updates wag field. Need to make disabled if a user has liked.
+        post_to_wag = Post.get_by_id(int(wagged_post), parent = blog_key())
+        current_wags = post_to_wag.wags
+        new_wags = current_wags + 1
+        # if post_to_wag:
+        #     for r in post_to_wag:
+        post_to_wag.wags = new_wags
+        post_to_wag.put()
+
+#see google search on how to update a record
+        self.redirect("/blog")
 
 # generate random string for password
 def make_salt(length = 5):
@@ -134,7 +157,7 @@ class Post(db.Model):
     last_modified = db.DateTimeProperty(auto_now = True)
     # added this field to track which posts belong to user
     poster = db.StringProperty(required = True)
-    wags = db.IntegerProperty(default = 0)
+    wags = db.IntegerProperty(default=0)
 
 # show the post page and content, replacing hard returns with html <br>
     def render(self):
@@ -155,20 +178,7 @@ class BlogFront(BlogHandler):
         self.render("front.html", posts = posts, logged_in = logged_in, current_user = current_user)
 
 
-#this is adding records but not returning to front properly. Note the hardcoded variables here. Posts table is not being updated
-#with wag var.
-    def post(self):
-        wagged_user = self.request.cookies.get("current_user")
-        wagged_post = 4993981813358592
-        wags = 1
-        p = Wags(parent = blog_key(), wagged_user = wagged_user, wagged_post = wagged_post)
-        p.put()
-#see google search on how to update a record
-        x.put()
-        logged_in = self.request.cookies.get("user_id")
-        current_user = self.request.cookies.get("current_user")
-        posts = db.GqlQuery("select * from Post order by created desc limit 10")
-        self.render("front.html", posts = posts, logged_in = logged_in, current_user = current_user)
+
 
 
 # get the selected post from the current blog
@@ -358,6 +368,6 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/newpost', NewPost),
                                ('/blog/login', Login),
                                ('/blog/logout', Logout),
-#                               ('/blog/addwag', AddWag)
+                               ('/blog/addwag', AddWag)
                                ],
                               debug=True)

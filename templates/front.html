@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-<form method = "post">
 <p>Welcome to our Animal Stories forum! Please share your (clean) stories about animal companions: funny, sweet, sad, even gross! We want to hear them all! Enjoy our latest posts here.</p>
 
 
   {% for p in posts %}
     {{ p.render() | safe }}
+        {{p.key().id()}}
 <!--     <br>Need to add edit/delete/like button. Users can only like other peoples' posts, and can only delete/edit their own.
     <br>Need to add functionality for comments. -->
             <div class="row">
@@ -19,8 +19,10 @@
         {% elif current_user == p.poster %}
           <img src="../images/wag_button_disabled.png" alt="You can't wag at your own posts, sorry!" name = "disabled_wag" title = "Sorry, you can't Wag at your own posts!">
         {% else %}
+        <form method = "post" action = "/blog/addwag">
+        <input type = "hidden" name = "post_key" value = "{{p.key().id()}}">
           <input type="image" src="../images/wag_button.png" alt="Click to Wag at this post" name = "wag_at_post" value = "add_wag" title = "Click to Wag at this post" onClick = "this.form.submit();">
-
+        </form>
         {% endif %}
           <br>
         {% if p.wags == 1 %}
@@ -31,5 +33,4 @@
         </div>
     </div>
   {% endfor %}
-</form>
 {% endblock %}
