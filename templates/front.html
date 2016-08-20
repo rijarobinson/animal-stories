@@ -3,6 +3,7 @@
 {% block content %}
 <p>Welcome to our Animal Stories forum! Please share your (clean) stories about animal companions: funny, sweet, sad, even gross! We want to hear them all! Enjoy our latest posts here.</p>
 
+{{posts}}
 
   {% for p in posts %}
     {{ p.render() | safe }}
@@ -14,15 +15,23 @@
             </div>
             <div class="col-md-4 text-right">
         Click to Wag at this post.<br>
+
+ <!--       need to do: check wags entity to see if there is a record for the current listed post and the current user. If there is one, need to show the button that will unwag functionality.-->
+        <!--also upgrade to show the wags incremented but not refresh entire page???? I don't want to submit the form, but I want to update the database-->
         {% if not logged_in %}
             <img src="../images/wag_button_disabled.png" alt="Sign up or log in to Wag at posts!" name = "disabled_wag" title = "Sign up or log in to Wag at posts!">
         {% elif current_user == p.poster %}
           <img src="../images/wag_button_disabled.png" alt="You can't wag at your own posts, sorry!" name = "disabled_wag" title = "Sorry, you can't Wag at your own posts!">
         {% else %}
+
+            {% if p.key().id()|string() in myList %}
+                    show image and functionality to unlike post<br>
+            {% else %}
         <form method = "post" action = "/blog/addwag">
         <input type = "hidden" name = "post_key" value = "{{p.key().id()}}">
           <input type="image" src="../images/wag_button.png" alt="Click to Wag at this post" name = "wag_at_post" value = "add_wag" title = "Click to Wag at this post" onClick = "this.form.submit();">
         </form>
+            {% endif %}
         {% endif %}
           <br>
         {% if p.wags == 1 %}

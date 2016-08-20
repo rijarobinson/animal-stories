@@ -60,8 +60,6 @@ class Wags(db.Model):
     last_modified = db.DateTimeProperty(auto_now = True)
 
 class AddWag(webapp2.RequestHandler):
-#this is adding records but not returning to front properly. Note the hardcoded variables here. Posts table is not being updated
-#with wag var.
     def post(self):
         wagged_user = self.request.cookies.get("current_user")
         wagged_post = self.request.get("post_key")
@@ -168,14 +166,20 @@ class Post(db.Model):
 
 class BlogFront(BlogHandler):
     def get(self):
-        # need to add "+1" button for people to like. Don't let users like their own post and error message
-        # if they do (use a modal?? or just easy, use other error messages as a model)
 #        posts = Post.all().order('-created')
 #        self.render('front.html', posts = posts)
         logged_in = self.request.cookies.get("user_id")
         current_user = self.request.cookies.get("current_user")
-        posts = db.GqlQuery("select * from Post order by created desc limit 10")
-        self.render("front.html", posts = posts, logged_in = logged_in, current_user = current_user)
+        posts = db.GqlQuery("SELECT * from Post order by created desc limit 10")
+
+
+#        user_wags = Wags.all().filter("wagged_user = ", "zara")
+        user_wags = db.GqlQuery("SELECT wagged_post from Wags WHERE wagged_user = :1", current_user)
+        myList = []
+        for u in user_wags:
+            myList.append(u.wagged_post)
+        #        user_wags = ["4993981813358592", "213"]
+        self.render("front.html", posts = posts, logged_in = logged_in, current_user = current_user, user_wags = user_wags, myList = myList)
 
 
 
