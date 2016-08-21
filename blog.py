@@ -60,22 +60,35 @@ class Wags(db.Model):
     last_modified = db.DateTimeProperty(auto_now = True)
 
 class AddWag(webapp2.RequestHandler):
+    #number of wags doesn't seem to be updating until a 2nd refresh, fyi, same happens with picture, too
     def post(self):
         wagged_user = self.request.cookies.get("current_user")
         wagged_post = self.request.get("post_key")
         p = Wags(parent = blog_key(), wagged_user = wagged_user, wagged_post = wagged_post)
         p.put()
 
-# updates wag field. Need to make disabled if a user has liked.
+# updates wag field.
         post_to_wag = Post.get_by_id(int(wagged_post), parent = blog_key())
         current_wags = post_to_wag.wags
         new_wags = current_wags + 1
-        # if post_to_wag:
-        #     for r in post_to_wag:
         post_to_wag.wags = new_wags
         post_to_wag.put()
+        self.redirect("/blog")
 
-#see google search on how to update a record
+
+
+class RemoveWag(webapp2.RequestHandler):
+    def post(self):
+        unwagged_user = self.request.cookies.get("current_user")
+        unwagged_post = self.request.get("post_key")
+        unwag = db.GqlQuery("SELECT * from Wags WHERE wagged_post = :1 AND wagged_user = :2", unwagged_post, unwagged_user)
+        db.delete(unwag)
+# # updates wag field.
+        post_to_unwag = Post.get_by_id(int(unwagged_post), parent = blog_key())
+        current_wags = post_to_unwag.wags
+        new_wags = (current_wags - 1)
+        post_to_unwag.wags = new_wags
+        post_to_unwag.put()
         self.redirect("/blog")
 
 # generate random string for password
@@ -171,15 +184,11 @@ class BlogFront(BlogHandler):
         logged_in = self.request.cookies.get("user_id")
         current_user = self.request.cookies.get("current_user")
         posts = db.GqlQuery("SELECT * from Post order by created desc limit 10")
-
-
-#        user_wags = Wags.all().filter("wagged_user = ", "zara")
         user_wags = db.GqlQuery("SELECT wagged_post from Wags WHERE wagged_user = :1", current_user)
         myList = []
         for u in user_wags:
             myList.append(u.wagged_post)
-        #        user_wags = ["4993981813358592", "213"]
-        self.render("front.html", posts = posts, logged_in = logged_in, current_user = current_user, user_wags = user_wags, myList = myList)
+        self.render("front.html", posts = posts, logged_in = logged_in, current_user = current_user, myList = myList)
 
 
 
@@ -372,6 +381,7 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/newpost', NewPost),
                                ('/blog/login', Login),
                                ('/blog/logout', Logout),
-                               ('/blog/addwag', AddWag)
+                               ('/blog/addwag', AddWag),
+                               ('/blog/removewag', RemoveWag)
                                ],
                               debug=True)
