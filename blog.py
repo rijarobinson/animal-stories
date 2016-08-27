@@ -217,7 +217,7 @@ class EditPost(BlogHandler):
        self.render("newpost.html", subject = subject, content = content, poster = poster, post_to_edit = post_to_edit)
 
 
-##START HERE!!! TODO: finish addcomment functionality from front.html & permalink.html.--need comment button on permalink?
+##START HERE!!!     TODO: finish addcomment functionality from front.html & permalink.html.--need comment button on permalink?
 
 # get the selected post from the current blog
 
