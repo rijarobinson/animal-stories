@@ -1,24 +1,24 @@
 <div class="post">
-  <div class="post-heading">
     <div class="row">
-      <div class="col-md-8 post-title">
-        {{p.subject}}
+      <div class="col-md-8 post-title background-black">
+        <a name = "{{p.key().id()}}">
+        </a>
+        <a href = "/blog/{{p.key().id()}}">
+          {{p.subject}}
+        </a>
       </div>
-
-      <div class="col-md-4 post-date text-right">
+      <div class="col-md-4 post-date text-right background-black">
         {{p.created.strftime("%b %d, %Y")}} by {{p.poster}}
       </div>
+
     </div>
-  </div>
 
     <div class="row">
-      <div class="col-md-12 post-content">
-<!--        <div class="post-content">-->
+      <div class="col-md-12 post-content text-center">
+        <div class="post-content">
         {{p._render_text | safe}}
-<!--        </div>-->
+        </div>
       </div>
     </div>
 
 </div>
-
-

@@ -2,4 +2,39 @@
 
 {% block content %}
   {{post.render() | safe}}
+<!--permalink is no longer working. works when i remve the code below. and i need to re-do editpost!! gah. Have only done comment until you click "Comment" to get the comment form but that's now broken too.
+-->
+    Need to add an edit/delete button. Error if user doesn't match poster.
+  {% if post.poster == current_user %}
+      <div class="row">
+        <div class="col-md-1">
+        <form action="/blog/editpost" method="post">
+            <input type="hidden" name = "post_key" value = "{{post.key().id()}}">
+            <input type="button" value="Edit Post" name="edit_post" onClick = "this.form.submit();">
+        </form>
+      </div>
+      <div class="col-md-1">
+        <form action="/blog/deletepost" method="post">
+            <input type = "hidden" name = "post_key" value = "{{post.key().id()}}">
+            <input type="button" value="Delete Post" name="delete_post" onClick = "this.form.submit();">
+        </form><br>
+      </div>
+    </div>
+  {% endif %}
+  {% if comment %}
+    <div class="row">
+      <div class="col-md-12">
+          <label>
+            <div>
+              Add a Comment
+            </div>
+            <textarea name="comment" style="width: 500px; height: 100px;"></textarea>
+          </label>
+          <form action="/comment" method="post">
+          <input type="button" value="Add Comment" name="add_comment">
+        </div>
+      </div>
+  {% endif %}
+
 {% endblock %}
+

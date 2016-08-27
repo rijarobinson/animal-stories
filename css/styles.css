@@ -96,13 +96,18 @@ object, video {
 
 /*link styling*/
 
+input[type="button"] {
+  color: #3cf;
+  background-color: #000;
+}
 a:link {
-  color: #000;
+  color: #3cf;
   text-decoration: none;
+  background-color: #000;
 }
 
 a:visited {
-  color: #009;
+  color: #3cf;
 }
 
 a:hover {
@@ -120,15 +125,6 @@ hr {
     margin: 20px auto;
 }
 */
-body {
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: 14px;
-
-    width: 800px;
-    margin: 0 auto;
-    padding: 10px;
-    color: #333;
-}
 /*
 h1 {
     background-color: #ddd;
@@ -181,11 +177,16 @@ input[type=submit] {
 .main-title {
     display: block;
     color: #222;
+    background-color: #99a;
     font-size: 40px;
     font-weight: bold;
     text-align: left;
     margin-bottom: 30px;
     text-decoration: none;
+}
+
+.background-black {
+  background-color: #000;
 }
 
 .post + .post {
@@ -206,6 +207,7 @@ input[type=submit] {
 .post-title {
     font-size: 24px;
     font-weight: bold;
+    padding: 5px;
 }
 
 .post-date {
@@ -216,9 +218,13 @@ input[type=submit] {
     color: #3cf;
     font-style: italic;
     font-size: 20px;
+    padding: 5px;
 }
 
 .post-content {
     margin-top: 5px;
-}
+    font-size: 20px;
+    margin-right: 5px;
+    word-wrap: break-word;
+  }
 

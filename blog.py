@@ -73,7 +73,7 @@ class AddWag(webapp2.RequestHandler):
         new_wags = current_wags + 1
         post_to_wag.wags = new_wags
         post_to_wag.put()
-        self.redirect("/blog")
+        self.redirect("/blog#" + wagged_post)
 
 
 
@@ -89,7 +89,22 @@ class RemoveWag(webapp2.RequestHandler):
         new_wags = (current_wags - 1)
         post_to_unwag.wags = new_wags
         post_to_unwag.put()
+        self.redirect("/blog#" + unwagged_post)
+
+class DeletePost(webapp2.RequestHandler):
+    def post(self):
+        user_who_deleted = self.request.cookies.get("current_user")
+        post_to_delete = self.request.get("post_key")
+        delete_record = Post.get_by_id(int(post_to_delete), parent = blog_key())
+#START HERE: now deleting but not refreshing page--see "strong consistency" for gae datastore documentation
+        db.delete(delete_record)
         self.redirect("/blog")
+
+class Comments(db.Model):
+    comment_user = db.StringProperty()
+    comment_post = db.StringProperty()
+    created = db.DateTimeProperty(auto_now_add = True)
+    last_modified = db.DateTimeProperty(auto_now = True)
 
 # generate random string for password
 def make_salt(length = 5):
@@ -124,6 +139,8 @@ class BlogHandler(webapp2.RequestHandler):
 
     def render_str(self, template, **params):
         params["user"] = self.request.get("username")
+        params["current_user"] = self.request.cookies.get("current_user")
+        params["comment"] = self.request.get("comment")
         return render_str(template, **params)
 
     def render(self, template, **kw):
@@ -190,9 +207,17 @@ class BlogFront(BlogHandler):
             myList.append(u.wagged_post)
         self.render("front.html", posts = posts, logged_in = logged_in, current_user = current_user, myList = myList)
 
+class EditPost(BlogHandler):
+    def post(self):
+       poster = self.request.get("poster")
+       post_to_edit = self.request.get("post_key")
+       subject = self.request.get("subject")
+       content = self.request.get("content")
+#self.response.out.write(poster + "<br>" + post_to_edit + "<br>" + subject + "<br>" + content)
+       self.render("newpost.html", subject = subject, content = content, poster = poster, post_to_edit = post_to_edit)
 
 
-
+##START HERE!!! TODO: finish addcomment functionality from front.html & permalink.html.--need comment button on permalink?
 
 # get the selected post from the current blog
 
@@ -200,21 +225,15 @@ class PostPage(BlogHandler):
     def get(self, post_id):
         key = db.Key.from_path("Post", int(post_id), parent=blog_key())
         post = db.get(key)
-
         if not post:
             self.error(404)
             return
-
         self.render("permalink.html", post = post)
 
 
 # pertaining to creating a new post
 class NewPost(BlogHandler):
-    # if the user is logged in, go to the newpost page, otherwise,
-    # redirect to login
-
     def get(self):
-
     #  TODO: make an error message if person tries to access directly without logging in
         poster = self.request.get("poster")
         if not poster:
@@ -229,22 +248,42 @@ class NewPost(BlogHandler):
     # if content is valid, if so redirect to the new post permalink
     # page
     def post(self):
-
         poster = self.request.get("poster")
+
 #  TODO: make an error message if person tries to access directly without logging in
         # if not poster:
         #     self.redirect("/blog")
 
         subject = self.request.get("subject")
         content = self.request.get("content")
+        #this is in case it is an edit, will be blank if new post
 
-        if subject and content:
-            p = Post(parent = blog_key(), subject = subject, content = content, poster = poster)
-            p.put()
-            self.redirect("/blog/%s" % str(p.key().id()))
+        post_to_edit = self.request.get("post_to_edit")
+
+        if post_to_edit:
+            if subject and content:
+                edit_record = Post.get_by_id(int(post_to_edit), parent = blog_key())
+                edit_record.subject = subject
+                edit_record.content = content
+                edit_record.put()
+                # self.response.out.write("executing if post_to_edit")
+                self.redirect("/blog#" + post_to_edit)
+            else:
+                # self.response.out.write("executing if post_to_edit else section")
+                error = "Please enter both a subject and content."
+                self.render("newpost.html", subject = subject, content = content, poster = poster, error = error, post_to_edit = post_to_edit)
         else:
-            error = "Please enter both a subject and content."
-            self.render("newpost.html", subject = subject, content = content, poster = poster, error = error)
+            if subject and content:
+                # self.response.out.write("executing primary else section (no post_to_edit)")
+                p = Post(parent = blog_key(), subject = subject, content = content, poster = poster)
+                p.put()
+                self.redirect("/blog/%s" % str(p.key().id()))
+            else:
+                # self.response.out.write("executing primary else no sub or content")
+                error = "Please enter both a subject and content."
+                self.render("newpost.html", subject = subject, content = content, poster = poster, error = error)
+
+
 
 # functions to validate username, password, and email
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
@@ -382,6 +421,8 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/login', Login),
                                ('/blog/logout', Logout),
                                ('/blog/addwag', AddWag),
-                               ('/blog/removewag', RemoveWag)
+                               ('/blog/removewag', RemoveWag),
+                               ("/blog/deletepost", DeletePost),
+                               ("/blog/editpost", EditPost)
                                ],
                               debug=True)

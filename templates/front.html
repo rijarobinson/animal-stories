@@ -3,50 +3,65 @@
 {% block content %}
 <p>Welcome to our Animal Stories forum! Please share your (clean) stories about animal companions: funny, sweet, sad, even gross! We want to hear them all! Enjoy our latest posts here.</p>
 
-{{posts}}
-
   {% for p in posts %}
     {{ p.render() | safe }}
-        {{p.key().id()}}
-        <div id = "p.key().id()">{{p.key().id()}}</div>
-<!--     <br>Need to add edit/delete/like button. Users can only like other peoples' posts, and can only delete/edit their own.
-    <br>Need to add functionality for comments. -->
-            <div class="row">
+        <div class="row">
             <div class="col-md-8">
+                    {% if current_user == p.poster %}
+                        <form action="/blog/editpost" method="post">
+                            <input type = "hidden" name = "post_key" value = "{{p.key().id()}}">
+                            <input type = "hidden" name = "subject" value = "{{p.subject}}">
+                            <input type = "hidden" name = "content" value = "{{p.content}}">
+                            <input type="hidden" name="poster" value="{{p.poster}}">
+                            <input type="button" value="Edit Post" name="edit_post" onClick = "this.form.submit();">
+                        </form><br>
+                        <form action="/blog/deletepost" method="post">
+                            <input type = "hidden" name = "post_key" value = "{{p.key().id()}}">
+                            <input type="button" value="Delete Post" name="delete_post" onClick = "this.form.submit();">
+                        </form><br>
+                {% endif %}
+                {% if not logged_in %}
+                        <input type="button[disabled]" alt="Log in to Comment" name = "comment_disabled" value = "Log in to Comment" title = "Log in to Comment" disabled>
+                {% else %}
+                <!--this text is blue because it's a link-->
+                        <a href = "/blog/{{p.key().id()}}?comment=True">
+                            <input type="button" alt="Comment on post" name = "comment_on_post" value = "Comment" title = "Click to Comment on post" onClick = "this.form.submit();">
+                        </a>
+                {% endif %}
             </div>
             <div class="col-md-4 text-right">
-
-
- <!--       need to do: check wags entity to see if there is a record for the current listed post and the current user. If there is one, need to show the button that will unwag functionality.-->
         <!--also upgrade to show the wags incremented but not refresh entire page???? I don't want to submit the form, but I want to update the database-->
-        {% if not logged_in %}
-        Log in to Wag at this post<br>
-            <img src="../images/wag_button_disabled.png" alt="Sign up or log in to Wag at posts!" name = "disabled_wag" title = "Sign up or log in to Wag at posts!">
-        {% elif current_user == p.poster %}
-          <img src="../images/wag_button_disabled.png" alt="You can't wag at your own posts, sorry!" name = "disabled_wag" title = "Sorry, you can't Wag at your own posts!">
-        {% else %}
-
-            {% if p.key().id()|string() in myList %}
-                    You've Wagged at this post<br>
-            <form method = "post" action = "/blog/removewag">
-            <input type = "hidden" name = "post_key" value = "{{p.key().id()}}">
-              <input type="image" src="../images/wag_button_wagged.png" alt="Click to remove Wag" name = "unwag_post" value = "remove_wag" title = "Click to remove Wag" onClick = "this.form.submit();">
-            </form>
-            {% else %}
-                    Click to Wag at this post.<br>
-        <form method = "post" action = "/blog/addwag">
-        <input type = "hidden" name = "post_key" value = "{{p.key().id()}}">
-          <input type="image" src="../images/wag_button.png" alt="Click to Wag at this post" name = "wag_at_post" value = "add_wag" title = "Click to Wag at this post" onClick = "this.form.submit();">
-        </form>
-            {% endif %}
-        {% endif %}
-          <br>
-        {% if p.wags == 1 %}
-            {{ p.wags }} Wag
-        {% else %}
-            {{ p.wags }} Wags<br>
-        {% endif %}
+                {% if not logged_in %}
+                    Log in to Wag at this post<br>
+                    <img src="../images/wag_button_disabled.png" alt="Sign up or log in to Wag at posts!" name = "disabled_wag" title = "Sign up or log in to Wag at posts!"><br>
+                {% elif current_user == p.poster %}
+                    <img src="../images/wag_button_disabled.png" alt="You can't wag at your own posts, sorry!" name = "disabled_wag" title = "Sorry, you can't Wag at your own posts!"></br>
+                {% else %}
+                    {% if p.key().id()|string() in myList %}
+                        You've Wagged at this post<br>
+                        <form method = "post" action = "/blog/removewag">
+                            <input type = "hidden" name = "post_key" value = "{{p.key().id()}}">
+                            <div class = "text-right">
+                                <input type="image" src="../images/wag_button_wagged.png" alt="Click to remove Wag" name = "unwag_post" value = "remove_wag" title = "Click to remove Wag" onClick = "this.form.submit();">
+                            </div>
+                        </form>
+                    {% else %}
+                        Click to Wag at this post.<br>
+                        <form method = "post" action = "/blog/addwag">
+                            <input type = "hidden" name = "post_key" value = "{{p.key().id()}}">
+                            <div class = "text-right">
+                                <input type="image" src="../images/wag_button.png" alt="Click to Wag at this post" name = "wag_at_post" value = "add_wag" title = "Click to Wag at this post" onClick = "this.form.submit();">
+                            </div>
+                        </form>
+                    {% endif %}
+                {% endif %}
+                {% if p.wags == 1 %}
+                    {{ p.wags }} Wag
+                {% else %}
+                    {{ p.wags }} Wags<br><br>
+                {% endif %}
+            </div>
         </div>
-    </div>
-  {% endfor %}
+
+    {% endfor %}
 {% endblock %}
