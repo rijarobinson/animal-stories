@@ -221,6 +221,10 @@ input[type=submit] {
     padding: 5px;
 }
 
+.remove-padding {
+  padding: 0px;
+}
+
 .post-content {
     margin-top: 5px;
     font-size: 20px;

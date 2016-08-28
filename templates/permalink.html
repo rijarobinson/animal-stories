@@ -2,9 +2,6 @@
 
 {% block content %}
   {{post.render() | safe}}
-<!--permalink is no longer working. works when i remve the code below. and i need to re-do editpost!! gah. Have only done comment until you click "Comment" to get the comment form but that's now broken too.
--->
-    Need to add an edit/delete button. Error if user doesn't match poster.
   {% if post.poster == current_user %}
       <div class="row">
         <div class="col-md-1">
@@ -21,17 +18,54 @@
       </div>
     </div>
   {% endif %}
+<div class="row">
+  <div class="col-md-12">
+  <a href = "/blog#{{post.key().id()}}">
+    <input type="button" alt="Back to List" name = "comment_on_post" value = "Back to List" title = "Click to Go Back to List">
+</a>
+</div>
+</div>
+  <hr>
+
+  <!--TODO: ability to edit comments-->
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Comments:</h2>
+    </div>
+  </div>
+
+  {% if comment_list=="No Comments" %}
+    {{comment_list}}
+  {% else %}
+
+    {% for c in comment_list %}
+    <div class="row">
+      <div class="col-md-12 post-date text-left remove-padding">
+        {{c.created.strftime("%b %d, %Y")}} by {{c.comment_user}}
+      </div>
+    </div>
+    <hr>
+      <div class="row">
+        <div class="col-md-12 post-content remove-padding">
+        {{c.comment_text}}
+        </div>
+      </div>
+    {% endfor %}
+    {% endif %}
+
   {% if comment %}
     <div class="row">
       <div class="col-md-12">
-          <label>
+          <form action="/blog/addcomment" method="post">
+            <label>
             <div>
               Add a Comment
             </div>
             <textarea name="comment" style="width: 500px; height: 100px;"></textarea>
           </label>
-          <form action="/comment" method="post">
-          <input type="button" value="Add Comment" name="add_comment">
+          <input type="button" value="Add Comment" name="add_comment" OnClick="this.form.submit();">
+          <input type="hidden" name="current_user" value="{{current_user}}">
+          <input type="hidden" name="post_key" value="{{post.key().id()}}">
         </div>
       </div>
   {% endif %}

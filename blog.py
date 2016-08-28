@@ -103,8 +103,22 @@ class DeletePost(webapp2.RequestHandler):
 class Comments(db.Model):
     comment_user = db.StringProperty()
     comment_post = db.StringProperty()
+    comment_text=db.TextProperty()
     created = db.DateTimeProperty(auto_now_add = True)
     last_modified = db.DateTimeProperty(auto_now = True)
+
+
+class AddComment(webapp2.RequestHandler):
+    def post(self):
+        comment_user = self.request.cookies.get("current_user")
+        comment_post = self.request.get("post_key")
+        comment_text = self.request.get("comment")
+        if comment_text:
+            c = Comments(parent = blog_key(), comment_user = comment_user, comment_post = comment_post, comment_text=comment_text)
+            c.put()
+            self.redirect("/blog/" + comment_post)
+
+
 
 # generate random string for password
 def make_salt(length = 5):
@@ -217,7 +231,8 @@ class EditPost(BlogHandler):
        self.render("newpost.html", subject = subject, content = content, poster = poster, post_to_edit = post_to_edit)
 
 
-##START HERE!!!     TODO: finish addcomment functionality from front.html & permalink.html.--need comment button on permalink?
+##START HERE!!!     TODO!.--need comment button on permalink?
+##when delete post need to delete related comments?
 
 # get the selected post from the current blog
 
@@ -225,10 +240,16 @@ class PostPage(BlogHandler):
     def get(self, post_id):
         key = db.Key.from_path("Post", int(post_id), parent=blog_key())
         post = db.get(key)
+        comments_to_show=db.GqlQuery("SELECT * from Comments WHERE comment_post = :1 ORDER BY created ASC", post_id)
+        comment_list_count=comments_to_show.count()
+        if comment_list_count >= 1:
+            comment_list=comments_to_show
+        else:
+            comment_list="No Comments"
         if not post:
             self.error(404)
             return
-        self.render("permalink.html", post = post)
+        self.render("permalink.html", post = post, comment_list=comment_list)
 
 
 # pertaining to creating a new post
@@ -423,6 +444,7 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/addwag', AddWag),
                                ('/blog/removewag', RemoveWag),
                                ("/blog/deletepost", DeletePost),
-                               ("/blog/editpost", EditPost)
+                               ("/blog/editpost", EditPost),
+                               ("/blog/addcomment", AddComment)
                                ],
                               debug=True)
