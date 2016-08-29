@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form action = "newpost">
+        {% if referred==2 %}
+            <h2>Welcome back, {{ username }}!</h2>
+        {% else %}
+            <h2>Thanks for signing up, {{ username }}!</h2>
+        {% endif %}
+    <div class="row">
+        <div class="col-md-2">
+            <input type = "hidden" name = "poster" value = {{ username }}>
+            <input type = "button" name="create_new_post" value = "Create a New Post" OnClick="this.form.submit();">
+        </div>
+    </form>
+
+        <div class="col-md-2">
+            <a href = "/blog">
+                <input type="button" alt="View Posts" name = "view_posts" value = "View Posts" title = "Click to List of Posts">
+            </a>
+        </div>
+    </div>
+
+{% endblock %}

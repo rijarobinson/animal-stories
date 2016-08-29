@@ -2,16 +2,16 @@
 
 {% block content %}
   {{post.render() | safe}}
+        <div class="row">
   {% if post.poster == current_user %}
-      <div class="row">
         <div class="col-md-1">
         <form action="/blog/editpost" method="post">
             <input type="hidden" name = "post_key" value = "{{post.key().id()}}">
             <input type="button" value="Edit Post" name="edit_post" onClick = "this.form.submit();">
         </form>
       </div>
-      <div class="col-md-2">
 
+      <div class="col-md-2">
         <form action="/blog/deletepost" method="post">
             <input type = "hidden" name = "post_key" value = "{{post.key().id()}}">
                     <div class="text-center">
@@ -19,11 +19,11 @@
           </div>
         </form>
       </div>
-<div class="col-md-1">
   {% endif %}
+<div class="col-md-1">
 
   {% if not current_user %}
-          <input type="button[disabled]" alt="Log in to Comment" name = "comment_disabled" value = "Log in to Comment" title = "Log in to Comment" disabled>
+          <input type="button[disabled]" class="disabled" alt="Log in to Comment" name = "comment_disabled" value = "Log in to Comment" title = "Log in to Comment" disabled>
   {% else %}
   <!--this text is blue because it's a link-->
           <a href = "/blog/{{post.key().id()}}?comment=True">
@@ -36,7 +36,7 @@
 <div class="row">
   <div class="col-md-12">
   <a href = "/blog#{{post.key().id()}}">
-    <input type="button" alt="Back to List" name = "comment_on_post" value = "Back to List" title = "Click to Go Back to List">
+    <input type="button" alt="Back to List" name = "back_to_list" value = "Back to List" title = "Click to Go Back to List">
 </a>
 </div>
 </div>

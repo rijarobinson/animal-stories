@@ -10,7 +10,34 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: Comments
+  properties:
+  - name: comment_post
+  - name: created
+
+- kind: Post
+  properties:
+  - name: created
+    direction: desc
+  - name: wagged_post
+
 - kind: Users
   properties:
   - name: username
   - name: hashed_password
+
+- kind: Wags
+  properties:
+  - name: time_created
+  - name: wagged_post
+
+- kind: Wags
+  properties:
+  - name: time_created
+    direction: desc
+  - name: wagged_post
+
+- kind: Wags
+  properties:
+  - name: wagged_user
+  - name: wagged_post

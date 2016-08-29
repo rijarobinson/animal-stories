@@ -1,21 +1,31 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h2>new post</h2>
+  <h2>New Post</h2>
 
-    <form method="post">
+    <form method="post" action="/blog/newpost">
       <label>
         <div>Subject</div>
         <input type="text" name="subject" value="{{subject}}">
       </label>
-
       <label>
         <div>Blog</div>
         <textarea name="content">{{content}}</textarea>
       </label>
-      Poster: {{ poster }}
       <div class="error">{{error}}</div>
 
-      <input type="submit">
+    <div class="row">
+      <div class="col-md-2">
+        <input type = "hidden" name = "post_to_edit" value = "{{post_to_edit}}">
+        <input type="hidden" name="poster" value="{{poster}}">
+        <input type="button" name="Submit Post" value="Submit Post" onClick="this.form.submit();">
+      </div>
     </form>
+      <div class="col-md-2">
+      <a href = "/blog">
+      <input type="button" alt="View Posts" name = "view_posts" value = "View Posts" title = "Click to List of Posts">
+      </a>
+      </div>
+    </div>
+
 {% endblock %}

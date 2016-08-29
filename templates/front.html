@@ -1,49 +1,51 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="post-content">Welcome to our Animal Stories forum! Please share your (clean) stories about animal companions: funny, sweet, sad, even gross! We want to hear them all! Enjoy our latest posts here.</div>
+<div class="post-content">
+    Welcome to our Animal Stories forum! Please share your (clean) stories about animal companions: funny, sweet, sad, even gross! We want to hear them all! Enjoy our latest posts here.
+</div>
 
   {% for p in posts %}
     {{ p.render() | safe }}
-        {% if current_user == p.poster %}
-            <div class="row">
-                <div class="col-md-1">
-                    <form action="/blog/editpost" method="post">
-                        <input type = "hidden" name = "post_key" value = "{{p.key().id()}}">
-                        <input type = "hidden" name = "subject" value = "{{p.subject}}">
-                        <input type = "hidden" name = "content" value = "{{p.content}}">
-                        <input type="hidden" name="poster" value="{{p.poster}}">
-                        <input type="button" value="Edit Post" name="edit_post" onClick = "this.form.submit();">
-                    </form>
-                </div>
-                <div class="col-md-1">
-                    <form action="/blog/deletepost" method="post">
-                        <input type = "hidden" name = "post_key" value = "{{p.key().id()}}">
-                        <input type="button" value="Delete Post" name="delete_post" onClick = "this.form.submit();">
-                    </form>
-                </div>
+    {% if current_user == p.poster %}
+        <div class="row">
+            <div class="col-md-1">
+                <form action="/blog/editpost" method="post">
+                    <input type = "hidden" name = "post_key" value = "{{p.key().id()}}">
+                    <input type = "hidden" name = "subject" value = "{{p.subject}}">
+                    <input type = "hidden" name = "content" value = "{{p.content}}">
+                    <input type="hidden" name="poster" value="{{p.poster}}">
+                    <input type="button" value="Edit Post" name="edit_post" onClick = "this.form.submit();">
+                </form>
             </div>
+            <div class="col-md-1">
+                <form action="/blog/deletepost" method="post">
+                    <input type = "hidden" name = "post_key" value = "{{p.key().id()}}">
+                    <input type="button" value="Delete Post" name="delete_post" onClick = "this.form.submit();">
+                </form>
+            </div>
+        </div>
         {% endif %}
 
-        <div class="row">
-        {% if not logged_in %}
+        <div class="row" style="padding-left: 16px;">
             <div class="md-col-2">
-                <input type="button[disabled]" alt="Log in to Comment" name = "comment_disabled" value = "Log in to Comment" title = "Log in to Comment" disabled>
+            {% if not logged_in %}
+                    <input type="button[disabled]" class="disabled text-center" alt="Log in to Comment" name = "comment_disabled" value = "Log in to Comment" title = "Log in to Comment" disabled>
+            {% else %}
+            <!--this text is blue because it's a link-->
+                    <a href = "/blog/{{p.key().id()}}?comment=True">
+                    <input type="button" alt="Comment on post" name = "comment_on_post" value = "Comment" title = "Click to Comment on post" onClick = "this.form.submit();">
+                    </a>
+            {% endif %}
             </div>
-        {% else %}
-        <!--this text is blue because it's a link-->
-            <div class="md-col-2">
-                <a href = "/blog/{{p.key().id()}}?comment=True">
-                <input type="button" alt="Comment on post" name = "comment_on_post" value = "Comment" title = "Click to Comment on post" onClick = "this.form.submit();">
-                </a>
-            </div>
-        {% endif %}
             <div class="col-md-2">
                 <a href = "/blog/{{p.key().id()}}">
                     <input type="button" alt="View Comments" name = "view_comments" value = "View Comments" title = "Click to View Comments">
                 </a>
             </div>
-        <div class="col-md-9 text-right">
+        </div>
+    <div class="row">
+        <div class="col-md-4 text-right">
         <!--also upgrade to show the wags incremented but not refresh entire page???? I don't want to submit the form, but I want to update the database-->
             {% if not logged_in %}
                 Log in to Wag at this post<br>
@@ -55,7 +57,7 @@
                     You've Wagged at this post<br>
                     <form method = "post" action = "/blog/removewag">
                         <input type = "hidden" name = "post_key" value = "{{p.key().id()}}">
-                        <div class = "text-right">
+                        <div class="text-right">
                             <input type="image" src="../images/wag_button_wagged.png" alt="Click to remove Wag" name = "unwag_post" value = "remove_wag" title = "Click to remove Wag" onClick = "this.form.submit();">
                         </div>
                     </form><br>
@@ -63,7 +65,7 @@
                     Click to Wag at this post.<br>
                     <form method = "post" action = "/blog/addwag">
                         <input type = "hidden" name = "post_key" value = "{{p.key().id()}}">
-                        <div class = "text-right">
+                        <div class="text-right">
                             <input type="image" src="../images/wag_button.png" alt="Click to Wag at this post" name = "wag_at_post" value = "add_wag" title = "Click to Wag at this post" onClick = "this.form.submit();">
                         </div>
                     </form><br>
@@ -76,6 +78,6 @@
             {% endif %}
         </div>
     </div>
-
 {% endfor %}
+
 {% endblock %}

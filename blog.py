@@ -167,10 +167,8 @@ class BlogHandler(webapp2.RequestHandler):
             "%s = %s; Path = /" % (name,cookie_val))
 
 
-#    def login(self, user):
-#        self.set_secure_cookie("user_id", str(user.key().id()))
-
-
+    def login(self, user):
+        self.set_secure_cookie("user_id", str(user.key().id()))
 
 #    def logout(self):
 #        self.response.headers.add_header("Set-Cookie", "user_id=; Path=/")
@@ -231,8 +229,9 @@ class EditPost(BlogHandler):
        self.render("newpost.html", subject = subject, content = content, poster = poster, post_to_edit = post_to_edit)
 
 
-##START HERE!!!     TODO!.--need comment button on permalink?
-##when delete post need to delete related comments?
+
+##START HERE!!  when delete post need to delete related comments?
+##combine login_welcome and signup_welcome into one form
 
 # get the selected post from the current blog
 
@@ -383,9 +382,12 @@ class Signup(BlogHandler):
             u = User(pw_hash = pw_hash, username = self.username, email = self.email)
             #     # save the new object to datastore
             u.put()
-
             self.login(u)
-            self.render("signup_welcome.html", username = self.username)
+            self.response.headers.add_header("Set-Cookie","%s = %s; Path = /" % ("current_user", str(self.username)))
+            referred=1
+        ##this is not working with the welcome.html form, but login is!
+
+            self.render("welcome.html", username = self.username, referred=referred)
 
 class Login(BlogHandler):
     def get(self):
@@ -421,7 +423,8 @@ class Login(BlogHandler):
                 self.response.headers.add_header(
                     "Set-Cookie",
                     "%s = %s; Path = /" % ("current_user", this_user))
-                self.render("login_welcome.html", username = username)
+                referred=2
+                self.render("welcome.html", username = username, referred=referred)
             else:
                 params['error_password'] = "Please check your password."
                 have_error = True
