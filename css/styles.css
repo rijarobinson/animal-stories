@@ -106,11 +106,33 @@ a:link {
   background-color: #000;
 }
 
+a.header:link {
+  color: #000;
+  text-decoration: none;
+  background-color: #22a;
+}
+
 a:visited {
   color: #3cf;
 }
 
 a:hover {
+  color: #000;
+  background-color: #3cf;
+}
+
+a.header:link {
+  color: #000;
+  text-decoration: none;
+  background-color: #99a;
+}
+
+a.header:visited {
+  color: #000;
+  background-color: #99a;
+}
+
+a.header:hover {
   color: #000;
   background-color: #3cf;
 }
@@ -176,8 +198,6 @@ input[type=submit] {
 
 .main-title {
     display: block;
-    color: #222;
-    background-color: #99a;
     font-size: 40px;
     font-weight: bold;
     text-align: left;

@@ -1,67 +1,81 @@
 {% extends "base.html" %}
 
 {% block content %}
-<p>Welcome to our Animal Stories forum! Please share your (clean) stories about animal companions: funny, sweet, sad, even gross! We want to hear them all! Enjoy our latest posts here.</p>
+<div class="post-content">Welcome to our Animal Stories forum! Please share your (clean) stories about animal companions: funny, sweet, sad, even gross! We want to hear them all! Enjoy our latest posts here.</div>
 
   {% for p in posts %}
     {{ p.render() | safe }}
-        <div class="row">
-            <div class="col-md-8">
-                    {% if current_user == p.poster %}
-                        <form action="/blog/editpost" method="post">
-                            <input type = "hidden" name = "post_key" value = "{{p.key().id()}}">
-                            <input type = "hidden" name = "subject" value = "{{p.subject}}">
-                            <input type = "hidden" name = "content" value = "{{p.content}}">
-                            <input type="hidden" name="poster" value="{{p.poster}}">
-                            <input type="button" value="Edit Post" name="edit_post" onClick = "this.form.submit();">
-                        </form><br>
-                        <form action="/blog/deletepost" method="post">
-                            <input type = "hidden" name = "post_key" value = "{{p.key().id()}}">
-                            <input type="button" value="Delete Post" name="delete_post" onClick = "this.form.submit();">
-                        </form><br>
-                {% endif %}
-                {% if not logged_in %}
-                        <input type="button[disabled]" alt="Log in to Comment" name = "comment_disabled" value = "Log in to Comment" title = "Log in to Comment" disabled>
-                {% else %}
-                <!--this text is blue because it's a link-->
-                        <a href = "/blog/{{p.key().id()}}?comment=True">
-                            <input type="button" alt="Comment on post" name = "comment_on_post" value = "Comment" title = "Click to Comment on post" onClick = "this.form.submit();">
-                        </a>
-                {% endif %}
+        {% if current_user == p.poster %}
+            <div class="row">
+                <div class="col-md-1">
+                    <form action="/blog/editpost" method="post">
+                        <input type = "hidden" name = "post_key" value = "{{p.key().id()}}">
+                        <input type = "hidden" name = "subject" value = "{{p.subject}}">
+                        <input type = "hidden" name = "content" value = "{{p.content}}">
+                        <input type="hidden" name="poster" value="{{p.poster}}">
+                        <input type="button" value="Edit Post" name="edit_post" onClick = "this.form.submit();">
+                    </form>
+                </div>
+                <div class="col-md-1">
+                    <form action="/blog/deletepost" method="post">
+                        <input type = "hidden" name = "post_key" value = "{{p.key().id()}}">
+                        <input type="button" value="Delete Post" name="delete_post" onClick = "this.form.submit();">
+                    </form>
+                </div>
             </div>
-            <div class="col-md-4 text-right">
-        <!--also upgrade to show the wags incremented but not refresh entire page???? I don't want to submit the form, but I want to update the database-->
-                {% if not logged_in %}
-                    Log in to Wag at this post<br>
-                    <img src="../images/wag_button_disabled.png" alt="Sign up or log in to Wag at posts!" name = "disabled_wag" title = "Sign up or log in to Wag at posts!"><br>
-                {% elif current_user == p.poster %}
-                    <img src="../images/wag_button_disabled.png" alt="You can't wag at your own posts, sorry!" name = "disabled_wag" title = "Sorry, you can't Wag at your own posts!"></br>
-                {% else %}
-                    {% if p.key().id()|string() in myList %}
-                        You've Wagged at this post<br>
-                        <form method = "post" action = "/blog/removewag">
-                            <input type = "hidden" name = "post_key" value = "{{p.key().id()}}">
-                            <div class = "text-right">
-                                <input type="image" src="../images/wag_button_wagged.png" alt="Click to remove Wag" name = "unwag_post" value = "remove_wag" title = "Click to remove Wag" onClick = "this.form.submit();">
-                            </div>
-                        </form>
-                    {% else %}
-                        Click to Wag at this post.<br>
-                        <form method = "post" action = "/blog/addwag">
-                            <input type = "hidden" name = "post_key" value = "{{p.key().id()}}">
-                            <div class = "text-right">
-                                <input type="image" src="../images/wag_button.png" alt="Click to Wag at this post" name = "wag_at_post" value = "add_wag" title = "Click to Wag at this post" onClick = "this.form.submit();">
-                            </div>
-                        </form>
-                    {% endif %}
-                {% endif %}
-                {% if p.wags == 1 %}
-                    {{ p.wags }} Wag
-                {% else %}
-                    {{ p.wags }} Wags<br><br>
-                {% endif %}
-            </div>
-        </div>
+        {% endif %}
 
-    {% endfor %}
+        <div class="row">
+        {% if not logged_in %}
+            <div class="md-col-2">
+                <input type="button[disabled]" alt="Log in to Comment" name = "comment_disabled" value = "Log in to Comment" title = "Log in to Comment" disabled>
+            </div>
+        {% else %}
+        <!--this text is blue because it's a link-->
+            <div class="md-col-2">
+                <a href = "/blog/{{p.key().id()}}?comment=True">
+                <input type="button" alt="Comment on post" name = "comment_on_post" value = "Comment" title = "Click to Comment on post" onClick = "this.form.submit();">
+                </a>
+            </div>
+        {% endif %}
+            <div class="col-md-2">
+                <a href = "/blog/{{p.key().id()}}">
+                    <input type="button" alt="View Comments" name = "view_comments" value = "View Comments" title = "Click to View Comments">
+                </a>
+            </div>
+        <div class="col-md-9 text-right">
+        <!--also upgrade to show the wags incremented but not refresh entire page???? I don't want to submit the form, but I want to update the database-->
+            {% if not logged_in %}
+                Log in to Wag at this post<br>
+                <img src="../images/wag_button_disabled.png" alt="Sign up or log in to Wag at posts!" name = "disabled_wag" title = "Sign up or log in to Wag at posts!"><br>
+            {% elif current_user == p.poster %}
+                <img src="../images/wag_button_disabled.png" alt="You can't wag at your own posts, sorry!" name = "disabled_wag" title = "Sorry, you can't Wag at your own posts!"></br>
+            {% else %}
+                {% if p.key().id()|string() in myList %}
+                    You've Wagged at this post<br>
+                    <form method = "post" action = "/blog/removewag">
+                        <input type = "hidden" name = "post_key" value = "{{p.key().id()}}">
+                        <div class = "text-right">
+                            <input type="image" src="../images/wag_button_wagged.png" alt="Click to remove Wag" name = "unwag_post" value = "remove_wag" title = "Click to remove Wag" onClick = "this.form.submit();">
+                        </div>
+                    </form><br>
+                {% else %}
+                    Click to Wag at this post.<br>
+                    <form method = "post" action = "/blog/addwag">
+                        <input type = "hidden" name = "post_key" value = "{{p.key().id()}}">
+                        <div class = "text-right">
+                            <input type="image" src="../images/wag_button.png" alt="Click to Wag at this post" name = "wag_at_post" value = "add_wag" title = "Click to Wag at this post" onClick = "this.form.submit();">
+                        </div>
+                    </form><br>
+                {% endif %}
+            {% endif %}
+            {% if p.wags == 1 %}
+                {{ p.wags }} Wag
+            {% else %}
+                {{ p.wags }} Wags<br><br>
+            {% endif %}
+        </div>
+    </div>
+
+{% endfor %}
 {% endblock %}
