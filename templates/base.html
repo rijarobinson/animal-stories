@@ -9,29 +9,39 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css"/>
     <link href="https://fonts.googleapis.com/css?family=Lato:400,400italic,700,700italic,900,900italic" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Baloo+Da" rel="stylesheet">
-
+    <link rel="icon" href="../images/wag_button.png">
 
   <title>Animal Stories</title>
 </head>
 
 <body>
-    <div class = "container">
-        <div class = "row">
-      <a href="/blog" class="main-title">
-        Animal Stories
-      </a>
-  </div>
 
-      <div id="content">
+    <div class = "container">
+      <div class = "row">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4">
+          <a class="header main-title text-center" href="/blog">
+            Animal Stories
+          </a>
+        </div>
+        <div class="col-md-4">
+        </div>
+      </div>
+
+        <div id="content">
       {% block content %}
       {% endblock %}
-      </div>
-        <div class="text-right">
+    </div>
+      <div class="row">
+        <div class="col-md-12 text-right">
         <a href="http://www.github.com/rijarobinson" class="fontawesome-github"></a>
         <a href="https://www.linkedin.com/in/marijarob" class="fontawesome-linkedin-sign"></a>
         <a href="mailto:marija@springmail.com" class="fontawesome-envelope"></a>
         <a href="http://www.plus.google.com" class="zocial-googleplus"></a>
         </div>
+      </div>
+
     </div>
 
 </body>

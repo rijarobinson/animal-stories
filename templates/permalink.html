@@ -10,14 +10,29 @@
             <input type="button" value="Edit Post" name="edit_post" onClick = "this.form.submit();">
         </form>
       </div>
-      <div class="col-md-1">
+      <div class="col-md-2">
+
         <form action="/blog/deletepost" method="post">
             <input type = "hidden" name = "post_key" value = "{{post.key().id()}}">
+                    <div class="text-center">
             <input type="button" value="Delete Post" name="delete_post" onClick = "this.form.submit();">
-        </form><br>
+          </div>
+        </form>
       </div>
-    </div>
+<div class="col-md-1">
   {% endif %}
+
+  {% if not current_user %}
+          <input type="button[disabled]" alt="Log in to Comment" name = "comment_disabled" value = "Log in to Comment" title = "Log in to Comment" disabled>
+  {% else %}
+  <!--this text is blue because it's a link-->
+          <a href = "/blog/{{post.key().id()}}?comment=True">
+              <input type="button" alt="Comment on post" name = "comment_on_post" value = "Comment" title = "Click to Comment on post" onClick = "this.form.submit();">
+          </a>
+  {% endif %}
+</div>
+</div>
+
 <div class="row">
   <div class="col-md-12">
   <a href = "/blog#{{post.key().id()}}">
@@ -25,6 +40,7 @@
 </a>
 </div>
 </div>
+
   <hr>
 
   <!--TODO: ability to edit comments-->
