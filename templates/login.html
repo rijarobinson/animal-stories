@@ -1,9 +1,36 @@
+<div class="container">
+	<div class="row">
+    {% if current_user %}
+        <div class="col-md-10 text-right">
+            {{current_user}} is logged in.
+        </div>
+        <div class="col-md-1 text-right">
+            <form action = "/blog/logout">
+                <input type = "button" class="text-center" name="logout" value = "Log Out" alt="Log Out" title="Log Out" OnClick="this.form.submit();">
+            </form>
+        </div>
+    {% else %}
+        <div class="col-md-10">
+        </div>
+        <div class="col-md-1 text-right">
+            <form action = "/blog/signup">
+                <input type = "button" class="text-center" name="signup" value = "Sign Up" alt="Sign Up to Post" title="Sign Up to Post" OnClick="this.form.submit();">
+            </form>
+        </div>
+    {% endif %}
+		<div class="col-md-1 text-right">
+		    <form action = "/blog">
+		        <input type = "button" class="text-center" name="return_to_list" value = "View Posts" alt="View Posts" title="View Posts" OnClick="this.form.submit();">
+		    </form>
+		</div>
+	</div>
+</div>
 {% extends "base.html" %}
 
 {% block content %}
 
 <form method = "post">
-	<h2>Login!</h2>
+	<h2>Enter your Username and Password</h2>
 	    <br>
 		    <label style> Username
 			    <input type="text" name="username" value = {{ username }}>
@@ -19,7 +46,7 @@
 			<br>
 		    <br>
 
-    <input type="button" name="login" value="Login" OnClick="this.form.submit();">
+    <input type="button" class="text-center" name="login" value="Submit My Login Info" alt="Click to Submit Credentials" OnClick="this.form.submit();">
 
 </form>
 
