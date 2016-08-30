@@ -228,10 +228,11 @@ class EditPost(BlogHandler):
 #self.response.out.write(poster + "<br>" + post_to_edit + "<br>" + subject + "<br>" + content)
        self.render("newpost.html", subject = subject, content = content, poster = poster, post_to_edit = post_to_edit)
 
-
+class WelcomeRedirect(webapp2.RequestHandler):
+    def get(self):
+        self.redirect("/blog/signup")
 
 ##START HERE!!  when delete post need to delete related comments?
-##combine login_welcome and signup_welcome into one form
 
 # get the selected post from the current blog
 
@@ -448,6 +449,7 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/removewag', RemoveWag),
                                ("/blog/deletepost", DeletePost),
                                ("/blog/editpost", EditPost),
-                               ("/blog/addcomment", AddComment)
+                               ("/blog/addcomment", AddComment),
+                               ("/blog/welcome", WelcomeRedirect)
                                ],
                               debug=True)
