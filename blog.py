@@ -98,6 +98,8 @@ class DeletePost(webapp2.RequestHandler):
         delete_record = Post.get_by_id(int(post_to_delete), parent = blog_key())
 #START HERE: now deleting but not refreshing page--see "strong consistency" for gae datastore documentation
         db.delete(delete_record)
+        delete_related_comments=db.GqlQuery("SELECT * from Comments WHERE comment_post = :1", post_to_delete)
+        db.delete(delete_related_comments)
         self.redirect("/blog")
 
 class Comments(db.Model):
@@ -108,17 +110,15 @@ class Comments(db.Model):
     last_modified = db.DateTimeProperty(auto_now = True)
 
 
-class AddComment(webapp2.RequestHandler):
+class DeleteComment(webapp2.RequestHandler):
     def post(self):
-        comment_user = self.request.cookies.get("current_user")
-        comment_post = self.request.get("post_key")
-        comment_text = self.request.get("comment")
-        if comment_text:
-            c = Comments(parent = blog_key(), comment_user = comment_user, comment_post = comment_post, comment_text=comment_text)
-            c.put()
-            self.redirect("/blog/" + comment_post)
-
-
+        user_who_deleted = self.request.cookies.get("current_user")
+        comment_to_delete = self.request.get("comment_key")
+        current_post = self.request.get("post_key")
+        delete_record = Comments.get_by_id(int(comment_to_delete), parent = blog_key())
+#START HERE: now deleting but not refreshing page--see "strong consistency" for gae datastore documentation
+        db.delete(delete_record)
+        self.redirect("/blog/" + current_post)
 
 # generate random string for password
 def make_salt(length = 5):
@@ -210,6 +210,7 @@ class BlogFront(BlogHandler):
     def get(self):
 #        posts = Post.all().order('-created')
 #        self.render('front.html', posts = posts)
+        front_page=1
         logged_in = self.request.cookies.get("user_id")
         current_user = self.request.cookies.get("current_user")
         posts = db.GqlQuery("SELECT * from Post order by created desc limit 10")
@@ -217,7 +218,7 @@ class BlogFront(BlogHandler):
         myList = []
         for u in user_wags:
             myList.append(u.wagged_post)
-        self.render("front.html", posts = posts, logged_in = logged_in, current_user = current_user, myList = myList)
+        self.render("front.html", posts = posts, logged_in = logged_in, current_user = current_user, myList = myList, front_page=front_page)
 
 class EditPost(BlogHandler):
     def post(self):
@@ -226,7 +227,47 @@ class EditPost(BlogHandler):
        subject = self.request.get("subject")
        content = self.request.get("content")
 #self.response.out.write(poster + "<br>" + post_to_edit + "<br>" + subject + "<br>" + content)
-       self.render("newpost.html", subject = subject, content = content, poster = poster, post_to_edit = post_to_edit)
+       self.render("newpost.html", subject = subject, content = content, poster = poster, post_to_edit = post_to_edit,newpost_page=1)
+
+class AddComment(BlogHandler):
+    def post(self):
+        comment_user = self.request.cookies.get("current_user")
+        comment_post = self.request.get("post_key")
+        comment_text = self.request.get("comment")
+        if comment_text:
+            c = Comments(parent = blog_key(), comment_user = comment_user, comment_post = comment_post, comment_text=comment_text)
+            c.put()
+            self.redirect("/blog/" + comment_post)
+
+class EditComment(BlogHandler):
+    def post(self):
+        current_user=self.request.cookies.get("current_user")
+        current_post = self.request.get("post_key")
+        comment_to_edit=self.request.get("comment_key")
+        comment_text=self.request.get("comment_text")
+        #comment_text = self.request.get("comment_text")
+        #self.response.out.write(current_user + "<br>" + current_post + "<br>" + comment_to_edit + "<br>" + comment_text)
+        self.render("editcomment.html", current_user=current_user, current_post=current_post, comment_to_edit=comment_to_edit, comment_text=comment_text)
+
+class SaveComment(BlogHandler):
+    def post(self):
+        current_user=self.request.cookies.get("current_user")
+        current_post = self.request.get("post_key")
+        comment_to_edit=self.request.get("comment_key")
+        comment_text = self.request.get("comment")
+
+        if comment_to_edit:
+            if comment_text:
+                edit_record = Comments.get_by_id(int(comment_to_edit), parent = blog_key())
+                edit_record.comment_text = comment_text
+                edit_record.put()
+                #self.response.out.write("executing if comment_to_edit<br>" + comment_text +"<br>" + comment_to_edit)
+                self.redirect("/blog/" + current_post)
+            else:
+                #self.response.out.write("executing if post_to_edit else section<br>" + comment_text +"<br>" + comment_to_edit)
+                error = "Please enter the comment."
+                self.render("editcomment.html", current_user=current_user, current_post=current_post, comment_to_edit=comment_to_edit, error=error, comment_text=comment_text)
+
 
 class WelcomeRedirect(webapp2.RequestHandler):
     def get(self):
@@ -249,7 +290,7 @@ class PostPage(BlogHandler):
         if not post:
             self.error(404)
             return
-        self.render("permalink.html", post = post, comment_list=comment_list)
+        self.render("permalink.html", post = post, comment_list=comment_list,permalink_page=1)
 
 
 # pertaining to creating a new post
@@ -261,7 +302,7 @@ class NewPost(BlogHandler):
             self.redirect("/blog")
         else:
 #        poster = self.request.get("username")
-            self.render("newpost.html", poster = poster)
+            self.render("newpost.html", poster = poster, newpost_page=1)
 
 
     # upon submission of new post: if the user is logged out
@@ -344,7 +385,7 @@ def get_pw_val(username,password):
 class Signup(BlogHandler):
     # show the signup form
     def get(self):
-        self.render("signup.html")
+        self.render("signup.html", sign_page=1)
 
     # after user enters sign up info, verify valid input
     def post(self):
@@ -392,9 +433,8 @@ class Signup(BlogHandler):
 
 class Login(BlogHandler):
     def get(self):
-        self.render("login.html")
+        self.render("login.html", log_page=1)
 
-# TODO for project evaluation: login_welcome and signup_welcome need to be the same page.
 # If anyone tries to access either of these pages without being logged in, redirect them to sign-up
 # or sign-in page
 
@@ -416,8 +456,6 @@ class Login(BlogHandler):
             pass_check_result = get_pw_val(username,password)
             if pass_check_result == True:
                 user = User.all().filter("username = ", username).get()
-   # then need to check posting functionality
-   # then dress it up
                 my_key = str(user.key().id())
                 self.set_secure_cookie("user_id", my_key)
                 this_user = str(username)
@@ -425,7 +463,7 @@ class Login(BlogHandler):
                     "Set-Cookie",
                     "%s = %s; Path = /" % ("current_user", this_user))
                 referred=2
-                self.render("welcome.html", username = username, referred=referred)
+                self.render("welcome.html", username = username, referred=referred,welcome_page=1)
             else:
                 params['error_password'] = "Please check your password."
                 have_error = True
@@ -435,7 +473,7 @@ class Logout(BlogHandler):
     def get(self):
             self.response.headers.add_header("Set-Cookie", "user_id=; Path=/")
             self.response.headers.add_header("Set-Cookie", "current_user=; Path=/")
-            self.redirect("/blog")
+            self.redirect("/blog/login")
 
 
 app = webapp2.WSGIApplication([('/', MainPage),
@@ -450,6 +488,9 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ("/blog/deletepost", DeletePost),
                                ("/blog/editpost", EditPost),
                                ("/blog/addcomment", AddComment),
+                               ("/blog/deletecomment", DeleteComment),
+                               ("/blog/editcomment", EditComment),
+                               ("/blog/savecomment", SaveComment),
                                ("/blog/welcome", WelcomeRedirect)
                                ],
                               debug=True)

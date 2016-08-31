@@ -1,0 +1,41 @@
+
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+      <div class="col-md-12">
+            <label>
+              Edit Comment<br>
+            </label>
+            <div class="post-content">
+            <textarea name="comment" style="width: 500px; height: 100px;">{{comment_text}}</textarea>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-2">
+        <form action="/blog/savecomment" method="post">
+          <input type="hidden" name="current_user" value="{{current_user}}">
+          <input type="hidden" name="post_key" value="{{current_post}}">
+          <input type="hidden" name="comment_key" value="{{comment_to_edit}}">
+          <input type="button" value="Save Change" name="change_comment" OnClick="this.form.submit();">
+        </form>
+        </div>
+        <div class="col-md-2">
+          <a href = "/blog">
+            <input type="button" alt="View Posts" name = "view_posts" value = "Cancel and View Posts" title = "Click to List of Posts">
+          </a>
+        </div>
+      </div>
+
+{% if error %}
+<div class="row">
+  <div class="col-md-12">
+<div class="error">
+  {{error}}
+</div>
+</div>
+</div>
+  {% endif %}
+
+
+{% endblock %}

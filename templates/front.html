@@ -1,32 +1,4 @@
-<div class="container">
-    {% if current_user %}
-    <div class="row">
-        <div class="col-md-11 text-right">
-            {{current_user}} is logged in.
-        </div>
-        <div class="col-md-1 text-right">
-            <form action = "/blog/logout">
-                <input type = "button" class="text-center" name="logout" value = "Log Out" alt="Log Out" title="Log Out" OnClick="this.form.submit();">
-            </form>
-        </div>
-    </div>
-    {% else %}
-    <div class="row">
-        <div class="col-md-10">
-        </div>
-        <div class="col-md-1 text-right">
-            <form action = "/blog/login">
-                <input type = "button" class="text-center" name="login" value = "Log In" alt="Log In" title="Log In" OnClick="this.form.submit();">
-            </form>
-        </div>
-        <div class="col-md-1 text-right">
-            <form action = "/blog/signup">
-                <input type = "button" class="text-center" name="signup" value = "Sign Up" alt="Sign Up to Post" title="Sign Up to Post" OnClick="this.form.submit();">
-            </form>
-        </div>
-    </div>
-    {% endif %}
-</div>
+
 
 
 {% extends "base.html" %}

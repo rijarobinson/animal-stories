@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css"/>
     <link href="https://fonts.googleapis.com/css?family=Lato:400,400italic,700,700italic,900,900italic" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Baloo+Da" rel="stylesheet">
-    <link rel="icon" href="../images/wag_button.png">
+    <link rel="icon" href="../images/as_icon_cat.png">
     <div class = "container">
 
     <title>
@@ -19,17 +19,45 @@
 
   <body>
 
-
       <div class = "row">
-        <div class="col-md-4">
-        </div>
-        <div class="col-md-4">
-          <a class="header main-title text-center" href="/blog">
+        <div class="col-md-9">
+          <a class="header main-title" href="/blog">
             Animal Stories
           </a>
         </div>
-        <div class="col-md-4">
+    {% if current_user or username %}
+        <div class="col-md-2 text-right">
+            {{current_user}} is logged in.
         </div>
+        <div class="col-md-1 text-right">
+            <form action = "/blog/logout">
+                <input type = "button" class="text-center" name="logout" value = "Log Out" alt="Log Out" title="Log Out" OnClick="this.form.submit();">
+            </form>
+        </div>
+    {% else %}
+    {% if not sign_page and not welcome_page %}
+        <div class="col-md-1 text-right">
+            <form action = "/blog/signup">
+                <input type = "button" class="text-center" name="signup" value = "Sign Up" alt="Sign Up to Post" title="Sign Up to Post" OnClick="this.form.submit();">
+            </form>
+        </div>
+        {% endif %}
+        {% if not log_page and not welcome_page %}
+        <div class="col-md-1 text-right">
+            <form action = "/blog/login">
+                <input type = "button" class="text-center" name="login" value = "Log In" alt="Log In to Post" title="Log In to Post" OnClick="this.form.submit();">
+            </form>
+        </div>
+        {% endif %}
+    {% endif %}
+
+    {% if not front_page and not welcome_page and not newpost_page and not permalink_page %}
+    <div class="col-md-1 text-right">
+        <form action = "/blog">
+            <input type = "button" class="text-center" name="return_to_list" value = "View Posts" alt="View Posts" title="View Posts" OnClick="this.form.submit();">
+        </form>
+    </div>
+    {% endif %}
       </div>
 
       <div id="content">
