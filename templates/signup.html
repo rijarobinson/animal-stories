@@ -2,43 +2,65 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+<div class="row">
+	<div class="col-md-12">
 <form method = "post">
 	<h2>Sign Up!</h2>
-	    <br>
-		    <label style> Username
+	 </div>
+</div>
+
+	<div class="row">
+		<div class="col-md-3">
+		    <label class="text-right">Username:
+		</div>
+		 <div class="col-md-9">
 			    <input type="text" name="username" value = {{ username }}>
 		    </label>
 		    <span style="color: red">{{ error_username }}</span>
-		    <br>
-		    <br>
+		</div>
+	</div>
 
-		    <label> Password
-		        <input type="password" name="password">
-		    </label>
-		    <span style="color: red">{{ error_pass }}</span>
-			<br>
-		    <br>
 
-		    <label> Verify Password
+<div class="row">
+	<div class="col-md-3">
+		<label class="text-right">Password:</label>
+	</div>
+	<div class="col-md-9">
+		<input type="password" name="password">
+		<span style="color: red">{{ error_pass }}</span>
+	</div>
+</div>
+
+
+<div class="row">
+	<div class="col-md-3">
+		    <label class="text-right">Verify Password:</label>
+		    </div>
+		    <div class="col-md-9">
 		        <input type="password" name="verify">
-		    </label>
 		    <span style="color: red">{{ error_verify }}</span>
-			<br>
-		    <br>
+		</div>
+	</div>
 
-		    <label> Email (optional)
+
+<div class="row">
+	<div class="col-md-3">
+		    <label class="text-right">Email (optional):</label>
+		    </div>
+		    <div class="col-md-9">
 		        <input type="text" name="email" value = {{ email }}>
-		    </label>
 		    <span style="color: red">{{ error_email }}</span>
-	<br>
-			    <br>
+		</div>
+</div>
 
 
-    <br>
-    <br>
+<div class="row">
+	<div class="col-md-12">
+		<p>
     <input type="button" name="signup" value="Submit My Info" OnClick="this.form.submit();">
-
+</p>
+</div>
+</div>
 
 
 </form>

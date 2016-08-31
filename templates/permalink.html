@@ -104,13 +104,18 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-2">
 
           <input type="button" value="Add Comment" name="add_comment" OnClick="this.form.submit();">
           <input type="hidden" name="current_user" value="{{current_user}}">
           <input type="hidden" name="post_key" value="{{post.key().id()}}">
         </form>
         </div>
+  <div class="col-md-2">
+  <a href = "/blog/{{post.key().id()}}">
+    <input type="button" alt="Cancel Comment" name = "cancel_comment" value = "Cancel Comment" title = "Click to Cancel Comment">
+</a>
+</div>
       </div>
 
   {% endif %}

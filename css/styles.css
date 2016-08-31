@@ -23,9 +23,16 @@
 
 * {
   font-family: "Lato", sans-serif;
-  background-color: #99a;
   align-self: left;
   text-align: left;
+  background-color: #99a;
+}
+
+body, html {
+    background-color: #99a;
+    height:  100%;
+    margin:  0px auto;
+    padding: 0px auto;
 }
 
 /*row styling*/
@@ -60,6 +67,8 @@ h4 {
 p {
   padding-top: 5px;
   padding-bottom: 5px;
+  padding-left: 15px;
+  font-size: 20px;
 }
 
 figcaption {
@@ -122,7 +131,16 @@ a:link {
 a.header:link {
   color: #000;
   text-decoration: none;
-  background-color: #22a;
+}
+
+a.header:visited {
+  background-color: #99a;
+  color: #000;
+}
+
+a.header:hover {
+  color: #000;
+  background-color: #3cf;
 }
 
 a:visited {
@@ -134,29 +152,27 @@ a:hover {
   background-color: #3cf;
 }
 
-a.header:link {
-  color: #000;
-  text-decoration: none;
-  background-color: #99a;
-}
-
-a.header:visited {
-  color: #000;
-  background-color: #99a;
-}
-
-a.header:hover {
-  color: #000;
-  background-color: #3cf;
-}
-
 hr {
   border: none;
   height: 4px;
   background-color: #3cf;
 }
 
-/*hr {
+.wrapper {
+  height: auto;       /* These two lines were the key. */
+  min-height: 100%;
+  /*overflow:   hidden;*/ /* Do not use this, it crops in small browsers. */
+  margin: 0px auto;
+  padding: 0px auto;
+  padding-top: 70px;
+  background-color: #000;
+ }
+
+label {
+  font-weight: bold;
+}
+
+ /*hr {
     margin: 20px auto;
 }
 */

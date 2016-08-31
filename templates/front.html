@@ -4,9 +4,23 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="post-content">
+<div class="row">
+    <div class="md-col-12">
+<p>
     Welcome to our Animal Stories forum! Please share your (clean) stories about animal companions: funny, sweet, sad, even gross! We want to hear them all! Enjoy our latest posts here.
+</p>
 </div>
+</div>
+{% if logged_in %}
+<div class="row">
+          <div class="col-md-2">
+            <form action = "/blog/newpost">
+            <input type = "hidden" name = "poster" value = "{{ current_user }}">
+            <input type = "button" name="create_new_post" value = "Create a New Post" OnClick="this.form.submit();">
+            </form>
+        </div>
+    </div>
+    {% endif %}
 
   {% for p in posts %}
     {{ p.render() | safe }}
@@ -47,7 +61,7 @@
             </div>
         </div>
 
-        <!--also upgrade to show the wags incremented but not refresh entire page???? I don't want to submit the form, but I want to update the database-->
+        <!--TODO: use AJAX to upgrade to show the wags incremented and other updates to db where I don't want to refresh entire page-->
             {% if not logged_in %}
         <div class="row">
             <div class="col-md-4 text-right">
