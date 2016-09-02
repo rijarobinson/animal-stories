@@ -28,9 +28,9 @@
         <!--TODO: fix inconsistencies in username vs.
         current_user throughout app-->
         <!--out-dented for readability-->
-            {% if current_user or username %}
+            {% if logged_in %}
                 <div class = "col-md-2 text-right">
-                    {{current_user}}{{username}} is logged in.
+                    {{ logged_in }} is logged in.
                 </div>
                 <div class = "col-md-1 text-right">
                     <form action = "/blog/logout">

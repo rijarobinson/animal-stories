@@ -184,7 +184,7 @@ class BlogFront(BlogHandler):
     def get(self):
         posts = Post.all().order('-created')
         front_page=1
-        logged_in = self.request.cookies.get("user_id")
+        logged_in = self.request.cookies.get("current_user")
         current_user = self.request.cookies.get("current_user")
         user_wags = db.GqlQuery("SELECT wagged_post from Wags WHERE "
             + "wagged_user = :1", current_user)
@@ -198,12 +198,14 @@ class BlogFront(BlogHandler):
 
 class EditPost(BlogHandler):
     def post(self):
-       poster = self.request.get("poster")
-       post_to_edit = self.request.get("post_key")
-       subject = self.request.get("subject")
-       content = self.request.get("content")
-       self.render("newpost.html", subject = subject, content = content,
-        poster = poster, post_to_edit = post_to_edit, newpost_page = 1)
+        poster = self.request.get("poster")
+        post_to_edit = self.request.get("post_key")
+        subject = self.request.get("subject")
+        content = self.request.get("content")
+        logged_in = self.request.cookies.get("current_user")
+        self.render("newpost.html", subject = subject, content = content,
+            poster = poster, post_to_edit = post_to_edit, newpost_page = 1,
+            logged_in = logged_in)
 
 class AddComment(BlogHandler):
     def post(self):
@@ -215,6 +217,10 @@ class AddComment(BlogHandler):
                 comment_post = comment_post, comment_text=comment_text)
             c.put()
             self.redirect("/blog/" + comment_post)
+        else:
+            #TODO: add error if no text added
+            self.redirect("/blog/" + comment_post + "?comment=True")
+
 
 class EditComment(BlogHandler):
     def post(self):
@@ -256,6 +262,7 @@ class PostPage(BlogHandler):
     def get(self, post_id):
         key = db.Key.from_path("Post", int(post_id), parent = blog_key())
         post = db.get(key)
+        logged_in = self.request.cookies.get("current_user")
         comments_to_show = db.GqlQuery("SELECT * from Comments WHERE "
             + "comment_post = :1 ORDER BY created ASC", post_id)
         comment_list_count = comments_to_show.count()
@@ -268,17 +275,19 @@ class PostPage(BlogHandler):
             return
         time.sleep(0.2)
         self.render("permalink.html", post = post, comment_list = comment_list,
-            permalink_page = 1)
+            permalink_page = 1, logged_in = logged_in)
 
 
 # pertaining to creating a new post
 class NewPost(BlogHandler):
     def get(self):
         poster = self.request.get("poster")
+        logged_in = self.request.cookies.get("current_user")
         if not poster:
             self.redirect("/blog")
         else:
-            self.render("newpost.html", poster = poster, newpost_page=1)
+            self.render("newpost.html", poster = poster, newpost_page=1,
+                logged_in = logged_in)
 
     def post(self):
         poster = self.request.get("poster")
@@ -287,6 +296,7 @@ class NewPost(BlogHandler):
         # post_to_edit variable is in case it is an edit, will be blank if new post
         # otherwise, the inputs will fill with the values of the post
         post_to_edit = self.request.get("post_to_edit")
+        logged_in = self.request.cookies.get("current_user")
         if post_to_edit:
             if subject and content:
                 edit_record = Post.get_by_id(int(post_to_edit),
@@ -299,7 +309,7 @@ class NewPost(BlogHandler):
                 error = "Please enter both a subject and content."
                 self.render("newpost.html", subject = subject,
                     content = content, poster = poster, error = error,
-                    post_to_edit = post_to_edit)
+                    post_to_edit = post_to_edit, logged_in = logged_in)
         else:
             if subject and content:
                 p = Post(parent = blog_key(), subject = subject,
@@ -309,7 +319,8 @@ class NewPost(BlogHandler):
             else:
                 error = "Please enter both a subject and content."
                 self.render("newpost.html", subject = subject,
-                    content = content, poster = poster, error = error)
+                    content = content, poster = poster,
+                    error = error, logged_in = logged_in)
 
 
 # functions to validate username, password, and email
@@ -390,9 +401,10 @@ class Signup(BlogHandler):
             self.login(u)
             self.response.headers.add_header("Set-Cookie",
                 "%s = %s; Path = /" % ("current_user", str(self.username)))
+            logged_in = self.username
             referred = 1
             self.render("welcome.html", username = self.username,
-                referred = referred)
+                referred = referred, logged_in = logged_in)
 
 class Login(BlogHandler):
     def get(self):
@@ -421,9 +433,10 @@ class Login(BlogHandler):
                 self.response.headers.add_header(
                     "Set-Cookie",
                     "%s = %s; Path= /" % ("current_user", this_user))
+                logged_in = this_user
                 referred = 2
                 self.render("welcome.html", username = username,
-                    referred = referred,welcome_page = 1)
+                    referred = referred,welcome_page = 1, logged_in = logged_in)
             else:
                 params['error_password'] = "Please check your password."
                 have_error = True
