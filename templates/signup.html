@@ -1,68 +1,57 @@
-
 {% extends "base.html" %}
-
 {% block content %}
-<div class="row">
-	<div class="col-md-12">
 <form method = "post">
-	<h2>Sign Up!</h2>
-	 </div>
-</div>
-
-	<div class="row">
-		<div class="col-md-3">
-		    <label class="text-right">Username:
-		</div>
-		 <div class="col-md-9">
-			    <input type="text" name="username" value = {{ username }}>
-		    </label>
-		    <span style="color: red">{{ error_username }}</span>
-		</div>
-	</div>
-
-
-<div class="row">
-	<div class="col-md-3">
-		<label class="text-right">Password:</label>
-	</div>
-	<div class="col-md-9">
-		<input type="password" name="password">
-		<span style="color: red">{{ error_pass }}</span>
-	</div>
-</div>
-
-
-<div class="row">
-	<div class="col-md-3">
-		    <label class="text-right">Verify Password:</label>
-		    </div>
-		    <div class="col-md-9">
-		        <input type="password" name="verify">
-		    <span style="color: red">{{ error_verify }}</span>
-		</div>
-	</div>
-
-
-<div class="row">
-	<div class="col-md-3">
-		    <label class="text-right">Email (optional):</label>
-		    </div>
-		    <div class="col-md-9">
-		        <input type="text" name="email" value = {{ email }}>
-		    <span style="color: red">{{ error_email }}</span>
-		</div>
-</div>
-
-
-<div class="row">
-	<div class="col-md-12">
-		<p>
-    <input type="button" name="signup" value="Submit My Info" OnClick="this.form.submit();">
-</p>
-</div>
-</div>
-
-
+    <div class = "row">
+        <div class = "col-md-12">
+            <h2>Sign Up!</h2>
+        </div>
+    </div>
+    <div class = "row">
+        <div class = "col-md-3">
+            <label class = "text-right">Username:</label>
+        </div>
+        <div class="col-md-9">
+            <input type = "text" name = "username" value = {{ username }}>
+            <span style = "color: red">{{ error_username }}</span>
+        </div>
+    </div>
+    <div class = "row">
+        <div class = "col-md-3">
+            <label class = "text-right">Password:</label>
+        </div>
+        <div class = "col-md-9">
+            <input type = "password" name = "password">
+            <span style = "color: red">{{ error_pass }}</span>
+        </div>
+    </div>
+    <div class = "row">
+        <div class = "col-md-3">
+            <label class = "text-right">Verify Password:</label>
+        </div>
+        <div class = "col-md-9">
+            <input type = "password" name="verify">
+            <span style = "color: red">{{ error_verify }}</span>
+        </div>
+    </div>
+    <div class = "row">
+        <div class = "col-md-3">
+            <label class = "text-right">Email (optional):</label>
+        </div>
+        <div class="col-md-9">
+            <input type = "text" name = "email" value = {{ email }}>
+            <span style = "color: red">{{ error_email }}</span>
+        </div>
+    </div>
+    <div class = "row">
+        <div class = "col-md-12">
+            <p>
+                <input type = "button"
+                    name = "signup"
+                    value = "Submit My Info"
+                    alt = "Submit My Info"
+                    OnClick="this.form.submit();">
+            </p>
+        </div>
+    </div>
 </form>
-
 {% endblock %}

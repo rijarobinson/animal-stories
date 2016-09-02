@@ -105,8 +105,6 @@ object, video {
   max-width: 100%;
 }
 
-
-
 input[type="button"] {
   color: #3cf;
   background-color: #000;
@@ -159,9 +157,8 @@ hr {
 }
 
 .wrapper {
-  height: auto;       /* These two lines were the key. */
+  height: auto;
   min-height: 100%;
-  /*overflow:   hidden;*/ /* Do not use this, it crops in small browsers. */
   margin: 0px auto;
   padding: 0px auto;
   padding-top: 70px;
@@ -172,25 +169,6 @@ label {
   font-weight: bold;
 }
 
- /*hr {
-    margin: 20px auto;
-}
-*/
-/*
-h1 {
-    background-color: #ddd;
-    color: #888;
-    margin: 0px;
-    height: 50px;
-}
-
-
-h2 {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-*/
 .error {
     color: red;
 }
@@ -247,7 +225,6 @@ input[type=submit] {
     font-size: 25px;
 }
 
-
 .post-heading {
     position: relative;
     border-bottom: 3px solid #666;
@@ -279,5 +256,9 @@ input[type=submit] {
     font-size: 20px;
     margin-right: 5px;
     word-wrap: break-word;
-  }
+}
 
+.comment-box {
+    width: 500px;
+    height: 100px;
+}

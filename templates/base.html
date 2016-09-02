@@ -1,78 +1,106 @@
 <!doctype html>
 <html lang = "en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="//normalize-css.googlecode.com/svn/trunk/normalize.css">
-    <link rel="stylesheet" href="/css/styles.css"/>
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
-    <link href="https://fonts.googleapis.com/css?family=Lato:400,400italic,700,700italic,900,900italic" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Baloo+Da" rel="stylesheet">
-    <link rel="icon" href="../images/as_icon_cat.png">
-    <div class="wrapper">
-    <div class = "container">
-    <title>
-      Animal Stories
-    </title>
-  </head>
+    <head>
+        <meta charset = "utf-8">
+        <meta http-equiv = "X-UA-Compatible" content = "IE=edge">
+        <meta name = "viewport" content = "width=device-width, initial-scale=1">
+        <link rel = "stylesheet" href = "//normalize-css.googlecode.com/svn/trunk/normalize.css">
+        <link rel = "stylesheet" href = "/css/styles.css"/>
+        <link rel = "stylesheet" href = "/css/bootstrap.min.css"/>
+        <link href = "https://fonts.googleapis.com/css?family=Lato:400,400italic,700,700italic,900,900italic"
+          rel = "stylesheet">
+        <link href = "https://fonts.googleapis.com/css?family=Baloo+Da"
+          rel = "stylesheet">
+        <link rel = "icon" href = "../images/as_icon_cat.png">
+            <title>
+                Animal Stories
+            </title>
+    </head>
+    <body>
+        <div class = "wrapper">
+            <div class = "container">
+                <div class = "row">
+                    <div class = "col-md-9">
+                        <a class = "header main-title" href = "/blog">
+                            Animal Stories
+                        </a>
+                    </div>
+        <!--TODO: fix inconsistencies in username vs.
+        current_user throughout app-->
+        <!--out-dented for readability-->
+            {% if current_user or username %}
+                <div class = "col-md-2 text-right">
+                    {{current_user}}{{username}} is logged in.
+                </div>
+                <div class = "col-md-1 text-right">
+                    <form action = "/blog/logout">
+                        <input type = "button"
+                        class = "text-center"
+                        name = "logout"
+                        value = "Log Out"
+                        alt = "Log Out"
+                        title = "Log Out"
+                        OnClick = "this.form.submit();">
+                    </form>
+                </div>
+            {% else %}
+                {% if not sign_page and not welcome_page %}
+                    <div class = "col-md-1 text-right">
+                        <form action = "/blog/signup">
+                            <input type = "button"
+                                class = "text-center"
+                                name = "signup"
+                                value = "Sign Up"
+                                alt = "Sign Up to Post"
+                                title = "Sign Up to Post"
+                                OnClick = "this.form.submit();">
+                        </form>
+                    </div>
+                {% endif %}
+                {% if not log_page and not welcome_page %}
+                    <div class="col-md-1 text-right">
+                        <form action = "/blog/login">
+                            <input type = "button"
+                                class = "text-center"
+                                name = "login"
+                                value = "Log In"
+                                alt = "Log In to Post"
+                                title = "Log In to Post"
+                                OnClick = "this.form.submit();">
+                        </form>
+                    </div>
+                {% endif %}
+            {% endif %}
 
-  <body>
-      <div class = "row">
-        <div class="col-md-9">
-          <a class="header main-title" href="/blog">
-            Animal Stories
-          </a>
+            {% if not front_page and not welcome_page and
+                not newpost_page and not permalink_page %}
+                <div class = "col-md-1 text-right">
+                    <form action = "/blog">
+                        <input type = "button"
+                        class = "text-center"
+                        name = "return_to_list"
+                        value = "View Posts"
+                        alt = "View Posts"
+                        title = "View Posts"
+                        OnClick = "this.form.submit();">
+                    </form>
+                </div>
+            {% endif %}
         </div>
-    {% if current_user or username %}
-        <div class="col-md-2 text-right">
-            {{current_user}} is logged in.
+        <div id = "content">
+            {% block content %}
+            {% endblock %}
         </div>
-        <div class="col-md-1 text-right">
-            <form action = "/blog/logout">
-                <input type="button" class="text-center" name="logout" value = "Log Out" alt="Log Out" title="Log Out" OnClick="this.form.submit();">
-            </form>
+        <div class = "row">
+            <div class = "col-md-12 text-right">
+                <a href = "http://www.github.com/rijarobinson" class="fontawesome-github" alt="Git Hub"></a>
+                <a href = "https://www.linkedin.com/in/marijarob" class="fontawesome-linkedin-sign" alt="LinkedIn"></a>
+                <a href = "mailto:marija@springmail.com" class="fontawesome-envelope" alt="Email"></a>
+                <a href = "http://www.plus.google.com" class="zocial-googleplus" alt="Google+"></a>
+            </div>
         </div>
-    {% else %}
-    {% if not sign_page and not welcome_page %}
-        <div class="col-md-1 text-right">
-            <form action = "/blog/signup">
-                <input type = "button" class="text-center" name="signup" value = "Sign Up" alt="Sign Up to Post" title="Sign Up to Post" OnClick="this.form.submit();">
-            </form>
-        </div>
-        {% endif %}
-        {% if not log_page and not welcome_page %}
-        <div class="col-md-1 text-right">
-            <form action = "/blog/login">
-                <input type = "button" class="text-center" name="login" value = "Log In" alt="Log In to Post" title="Log In to Post" OnClick="this.form.submit();">
-            </form>
-        </div>
-        {% endif %}
-    {% endif %}
-
-    {% if not front_page and not welcome_page and not newpost_page and not permalink_page %}
-    <div class="col-md-1 text-right">
-        <form action = "/blog">
-            <input type = "button" class="text-center" name="return_to_list" value = "View Posts" alt="View Posts" title="View Posts" OnClick="this.form.submit();">
-        </form>
     </div>
-    {% endif %}
-      </div>
-
-      <div id="content">
-      {% block content %}
-      {% endblock %}
-      </div>
-      <div class="row">
-        <div class="col-md-12 text-right">
-        <a href="http://www.github.com/rijarobinson" class="fontawesome-github" alt="Git Hub"></a>
-        <a href="https://www.linkedin.com/in/marijarob" class="fontawesome-linkedin-sign" alt="LinkedIn"></a>
-        <a href="mailto:marija@springmail.com" class="fontawesome-envelope" alt="Email"></a>
-        <a href="http://www.plus.google.com" class="zocial-googleplus" alt="Google+"></a>
-        </div>
-      </div>
     </div>
-  </div>
-  </body>
+    </body>
 </html>
 

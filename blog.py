@@ -1,13 +1,22 @@
 import os
+
 import re
 from string import letters
 
 import webapp2
 import jinja2
+
 # random, string, hashlib used for salted hashed password generation
 import random
 import string
 import hashlib
+
+import time
+
+# TODO
+# time library is to create short delay before reloading to compensate for
+# eventual consistency. This is a temporary fix until
+# I can better understand ancestor queries
 
 from google.appengine.ext import db
 
@@ -19,39 +28,14 @@ def render_str(template, **params):
     t = jinja_env.get_template(template)
     return t.render(params)
 
-# user key--need to see where this implements
 def users_key(group = "default"):
     return db.Key.from_path("users", group)
-########
 
 # User datastore entity
 class User(db.Model):
     username = db.StringProperty(required = True)
     pw_hash = db.StringProperty(required = True)
     email = db.StringProperty()
-
-    @classmethod
-    def by_id(cls, uid):
-        return User.get_by_id(uid, parent = users_key())
-
-    @classmethod
-    def by_name(cls, name):
-        u = User.all().filter('username =', name).get()
-        return u
-
-    @classmethod
-    def register(cls, name, pw, email = None):
-        pw_hash = make_pw_hash(name, pw)
-        return User(parent = users_key(),
-                    username = name,
-                    pw_hash = pw_hash,
-                    email = email)
-
-    @classmethod
-    def login(cls, name, pw):
-        u = cls.by_name(name)
-        if u and valid_pw(name, pw, u.pw_hash):
-            return u
 
 class Wags(db.Model):
     wagged_user = db.StringProperty()
@@ -60,11 +44,11 @@ class Wags(db.Model):
     last_modified = db.DateTimeProperty(auto_now = True)
 
 class AddWag(webapp2.RequestHandler):
-    #number of wags doesn't seem to be updating until a 2nd refresh, fyi, same happens with picture, too
     def post(self):
         wagged_user = self.request.cookies.get("current_user")
         wagged_post = self.request.get("post_key")
-        p = Wags(parent = blog_key(), wagged_user = wagged_user, wagged_post = wagged_post)
+        p = Wags(parent = blog_key(), wagged_user = wagged_user,
+            wagged_post = wagged_post)
         p.put()
 
 # updates wag field.
@@ -75,15 +59,13 @@ class AddWag(webapp2.RequestHandler):
         post_to_wag.put()
         self.redirect("/blog#" + wagged_post)
 
-
-
 class RemoveWag(webapp2.RequestHandler):
     def post(self):
         unwagged_user = self.request.cookies.get("current_user")
         unwagged_post = self.request.get("post_key")
-        unwag = db.GqlQuery("SELECT * from Wags WHERE wagged_post = :1 AND wagged_user = :2", unwagged_post, unwagged_user)
+        unwag = db.GqlQuery("SELECT * from Wags WHERE wagged_post = :1 "
+            + "AND wagged_user = :2", unwagged_post, unwagged_user)
         db.delete(unwag)
-# # updates wag field.
         post_to_unwag = Post.get_by_id(int(unwagged_post), parent = blog_key())
         current_wags = post_to_unwag.wags
         new_wags = (current_wags - 1)
@@ -95,10 +77,11 @@ class DeletePost(webapp2.RequestHandler):
     def post(self):
         user_who_deleted = self.request.cookies.get("current_user")
         post_to_delete = self.request.get("post_key")
-        delete_record = Post.get_by_id(int(post_to_delete), parent = blog_key())
-#START HERE: now deleting but not refreshing page--see "strong consistency" for gae datastore documentation
+        delete_record = Post.get_by_id(int(post_to_delete),
+            parent = blog_key())
         db.delete(delete_record)
-        delete_related_comments=db.GqlQuery("SELECT * from Comments WHERE comment_post = :1", post_to_delete)
+        delete_related_comments=db.GqlQuery("SELECT * from Comments WHERE "
+            + "comment_post = :1", post_to_delete)
         db.delete(delete_related_comments)
         self.redirect("/blog")
 
@@ -109,14 +92,13 @@ class Comments(db.Model):
     created = db.DateTimeProperty(auto_now_add = True)
     last_modified = db.DateTimeProperty(auto_now = True)
 
-
 class DeleteComment(webapp2.RequestHandler):
     def post(self):
         user_who_deleted = self.request.cookies.get("current_user")
         comment_to_delete = self.request.get("comment_key")
         current_post = self.request.get("post_key")
-        delete_record = Comments.get_by_id(int(comment_to_delete), parent = blog_key())
-#START HERE: now deleting but not refreshing page--see "strong consistency" for gae datastore documentation
+        delete_record = Comments.get_by_id(int(comment_to_delete),
+            parent = blog_key())
         db.delete(delete_record)
         self.redirect("/blog/" + current_post)
 
@@ -133,7 +115,6 @@ def make_pw_hash(username, password, salt = None):
 def valid_pw(name, pw, h):
     salt = h.split("|")[1]
     return h == make_pw_hash(name, pw, salt)
-
 
 # functions for cookies and hashing
 def hash_str(s):
@@ -170,10 +151,6 @@ class BlogHandler(webapp2.RequestHandler):
     def login(self, user):
         self.set_secure_cookie("user_id", str(user.key().id()))
 
-#    def logout(self):
-#        self.response.headers.add_header("Set-Cookie", "user_id=; Path=/")
-
-
 def render_post(response, post):
     response.out.write("<b>" + post.subject + "</b><br>")
     response.out.write(post.content)
@@ -184,12 +161,10 @@ class MainPage(BlogHandler):
       self.write("Hello, Udacity!")
 
 # set blog key in case we decide to have additional blogs
-
 def blog_key(name = "default"):
     return db.Key.from_path("blogs", name)
 
 # datastore for posts
-
 class Post(db.Model):
     subject = db.StringProperty(required = True)
     content = db.TextProperty(required = True)
@@ -205,20 +180,21 @@ class Post(db.Model):
         return render_str("post.html", p = self)
 
 # front page of blog at /blog, display 10 latest posts
-
 class BlogFront(BlogHandler):
     def get(self):
-#        posts = Post.all().order('-created')
-#        self.render('front.html', posts = posts)
+        posts = Post.all().order('-created')
         front_page=1
         logged_in = self.request.cookies.get("user_id")
         current_user = self.request.cookies.get("current_user")
-        posts = db.GqlQuery("SELECT * from Post order by created desc limit 10")
-        user_wags = db.GqlQuery("SELECT wagged_post from Wags WHERE wagged_user = :1", current_user)
+        user_wags = db.GqlQuery("SELECT wagged_post from Wags WHERE "
+            + "wagged_user = :1", current_user)
         myList = []
         for u in user_wags:
             myList.append(u.wagged_post)
-        self.render("front.html", posts = posts, logged_in = logged_in, current_user = current_user, myList = myList, front_page=front_page)
+            time.sleep(0.2)
+        self.render("front.html", posts = posts, logged_in = logged_in,
+            current_user = current_user, myList = myList,
+            front_page = front_page)
 
 class EditPost(BlogHandler):
     def post(self):
@@ -226,8 +202,8 @@ class EditPost(BlogHandler):
        post_to_edit = self.request.get("post_key")
        subject = self.request.get("subject")
        content = self.request.get("content")
-#self.response.out.write(poster + "<br>" + post_to_edit + "<br>" + subject + "<br>" + content)
-       self.render("newpost.html", subject = subject, content = content, poster = poster, post_to_edit = post_to_edit,newpost_page=1)
+       self.render("newpost.html", subject = subject, content = content,
+        poster = poster, post_to_edit = post_to_edit, newpost_page = 1)
 
 class AddComment(BlogHandler):
     def post(self):
@@ -235,116 +211,105 @@ class AddComment(BlogHandler):
         comment_post = self.request.get("post_key")
         comment_text = self.request.get("comment")
         if comment_text:
-            c = Comments(parent = blog_key(), comment_user = comment_user, comment_post = comment_post, comment_text=comment_text)
+            c = Comments(parent = blog_key(), comment_user = comment_user,
+                comment_post = comment_post, comment_text=comment_text)
             c.put()
             self.redirect("/blog/" + comment_post)
 
 class EditComment(BlogHandler):
     def post(self):
-        current_user=self.request.cookies.get("current_user")
+        current_user = self.request.cookies.get("current_user")
         current_post = self.request.get("post_key")
-        comment_to_edit=self.request.get("comment_key")
-        comment_text=self.request.get("comment_text")
-        #comment_text = self.request.get("comment_text")
-        #self.response.out.write(current_user + "<br>" + current_post + "<br>" + comment_to_edit + "<br>" + comment_text)
-        self.render("editcomment.html", current_user=current_user, current_post=current_post, comment_to_edit=comment_to_edit, comment_text=comment_text)
+        comment_to_edit = self.request.get("comment_key")
+        comment_text = self.request.get("comment_text")
+        self.render("editcomment.html", current_user = current_user,
+            current_post = current_post, comment_to_edit = comment_to_edit,
+            comment_text = comment_text)
 
 class SaveComment(BlogHandler):
     def post(self):
-        current_user=self.request.cookies.get("current_user")
+        current_user = self.request.cookies.get("current_user")
         current_post = self.request.get("post_key")
         comment_to_edit=self.request.get("comment_key")
         comment_text = self.request.get("comment")
-
         if comment_to_edit:
             if comment_text:
-                edit_record = Comments.get_by_id(int(comment_to_edit), parent = blog_key())
+                edit_record = Comments.get_by_id(int(comment_to_edit),
+                    parent = blog_key())
                 edit_record.comment_text = comment_text
                 edit_record.put()
-                #self.response.out.write("executing if comment_to_edit<br>" + comment_text +"<br>" + comment_to_edit)
                 self.redirect("/blog/" + current_post)
             else:
-                #self.response.out.write("executing if post_to_edit else section<br>" + comment_text +"<br>" + comment_to_edit)
                 error = "Please enter the comment."
-                self.render("editcomment.html", current_user=current_user, current_post=current_post, comment_to_edit=comment_to_edit, error=error, comment_text=comment_text)
+                self.render("editcomment.html", current_user = current_user,
+                    current_post = current_post,
+                    comment_to_edit = comment_to_edit,
+                    error = error, comment_text = comment_text)
 
 
 class WelcomeRedirect(webapp2.RequestHandler):
     def get(self):
         self.redirect("/blog/signup")
 
-##START HERE!!  when delete post need to delete related comments?
-
 # get the selected post from the current blog
-
 class PostPage(BlogHandler):
     def get(self, post_id):
-        key = db.Key.from_path("Post", int(post_id), parent=blog_key())
+        key = db.Key.from_path("Post", int(post_id), parent = blog_key())
         post = db.get(key)
-        comments_to_show=db.GqlQuery("SELECT * from Comments WHERE comment_post = :1 ORDER BY created ASC", post_id)
-        comment_list_count=comments_to_show.count()
+        comments_to_show = db.GqlQuery("SELECT * from Comments WHERE "
+            + "comment_post = :1 ORDER BY created ASC", post_id)
+        comment_list_count = comments_to_show.count()
         if comment_list_count >= 1:
-            comment_list=comments_to_show
+            comment_list = comments_to_show
         else:
-            comment_list="No Comments"
+            comment_list = "No Comments"
         if not post:
             self.error(404)
             return
-        self.render("permalink.html", post = post, comment_list=comment_list,permalink_page=1)
+        time.sleep(0.2)
+        self.render("permalink.html", post = post, comment_list = comment_list,
+            permalink_page = 1)
 
 
 # pertaining to creating a new post
 class NewPost(BlogHandler):
     def get(self):
-    #  TODO: make an error message if person tries to access directly without logging in
         poster = self.request.get("poster")
         if not poster:
             self.redirect("/blog")
         else:
-#        poster = self.request.get("username")
             self.render("newpost.html", poster = poster, newpost_page=1)
 
-
-    # upon submission of new post: if the user is logged out
-    # go to the front page of blog, otherwise, check to see
-    # if content is valid, if so redirect to the new post permalink
-    # page
     def post(self):
         poster = self.request.get("poster")
-
-#  TODO: make an error message if person tries to access directly without logging in
-        # if not poster:
-        #     self.redirect("/blog")
-
         subject = self.request.get("subject")
         content = self.request.get("content")
-        #this is in case it is an edit, will be blank if new post
-
+        # post_to_edit variable is in case it is an edit, will be blank if new post
+        # otherwise, the inputs will fill with the values of the post
         post_to_edit = self.request.get("post_to_edit")
-
         if post_to_edit:
             if subject and content:
-                edit_record = Post.get_by_id(int(post_to_edit), parent = blog_key())
+                edit_record = Post.get_by_id(int(post_to_edit),
+                    parent = blog_key())
                 edit_record.subject = subject
                 edit_record.content = content
                 edit_record.put()
-                # self.response.out.write("executing if post_to_edit")
-                self.redirect("/blog#" + post_to_edit)
+                self.redirect("/blog/" + post_to_edit)
             else:
-                # self.response.out.write("executing if post_to_edit else section")
                 error = "Please enter both a subject and content."
-                self.render("newpost.html", subject = subject, content = content, poster = poster, error = error, post_to_edit = post_to_edit)
+                self.render("newpost.html", subject = subject,
+                    content = content, poster = poster, error = error,
+                    post_to_edit = post_to_edit)
         else:
             if subject and content:
-                # self.response.out.write("executing primary else section (no post_to_edit)")
-                p = Post(parent = blog_key(), subject = subject, content = content, poster = poster)
+                p = Post(parent = blog_key(), subject = subject,
+                    content = content, poster = poster)
                 p.put()
                 self.redirect("/blog/%s" % str(p.key().id()))
             else:
-                # self.response.out.write("executing primary else no sub or content")
                 error = "Please enter both a subject and content."
-                self.render("newpost.html", subject = subject, content = content, poster = poster, error = error)
-
+                self.render("newpost.html", subject = subject,
+                    content = content, poster = poster, error = error)
 
 
 # functions to validate username, password, and email
@@ -367,7 +332,7 @@ def new_user(username):
     result = user.count()
     return result
 
-# this function checks for a matching username/password pair. Should return 0
+# checks for a matching username/password pair. Should return 0
 # if no match or 1 if there is a match. Then check the hash of the username and
 # password against the hash plus salt in the db
 def get_pw_val(username,password):
@@ -383,9 +348,8 @@ def get_pw_val(username,password):
 
 # pertaining to sign up functionality
 class Signup(BlogHandler):
-    # show the signup form
     def get(self):
-        self.render("signup.html", sign_page=1)
+        self.render("signup.html", sign_page = 1)
 
     # after user enters sign up info, verify valid input
     def post(self):
@@ -420,24 +384,19 @@ class Signup(BlogHandler):
             self.render("signup.html", **params)
         else:
             pw_hash = make_pw_hash(self.username,self.password)
-                # save the signup info for the blog (is this so we can have multiple blogs?)
-            u = User(pw_hash = pw_hash, username = self.username, email = self.email)
-            #     # save the new object to datastore
+            u = User(pw_hash = pw_hash, username = self.username,
+                email = self.email)
             u.put()
             self.login(u)
-            self.response.headers.add_header("Set-Cookie","%s = %s; Path = /" % ("current_user", str(self.username)))
-            referred=1
-        ##this is not working with the welcome.html form, but login is!
-
-            self.render("welcome.html", username = self.username, referred=referred)
+            self.response.headers.add_header("Set-Cookie",
+                "%s = %s; Path = /" % ("current_user", str(self.username)))
+            referred = 1
+            self.render("welcome.html", username = self.username,
+                referred = referred)
 
 class Login(BlogHandler):
     def get(self):
-        self.render("login.html", log_page=1)
-
-# If anyone tries to access either of these pages without being logged in, redirect them to sign-up
-# or sign-in page
-
+        self.render("login.html", log_page = 1)
     def post(self):
         have_error = False
         username = self.request.get("username")
@@ -447,7 +406,7 @@ class Login(BlogHandler):
                       password = password)
 
         if new_user(username) != 1:
-            params['error_username'] = "That user doesn't have an account."
+            params["error_username"] = "That user doesn't have an account."
             have_error = True
 
         if have_error:
@@ -461,9 +420,10 @@ class Login(BlogHandler):
                 this_user = str(username)
                 self.response.headers.add_header(
                     "Set-Cookie",
-                    "%s = %s; Path = /" % ("current_user", this_user))
-                referred=2
-                self.render("welcome.html", username = username, referred=referred,welcome_page=1)
+                    "%s = %s; Path= /" % ("current_user", this_user))
+                referred = 2
+                self.render("welcome.html", username = username,
+                    referred = referred,welcome_page = 1)
             else:
                 params['error_password'] = "Please check your password."
                 have_error = True
@@ -471,20 +431,22 @@ class Login(BlogHandler):
 
 class Logout(BlogHandler):
     def get(self):
-            self.response.headers.add_header("Set-Cookie", "user_id=; Path=/")
-            self.response.headers.add_header("Set-Cookie", "current_user=; Path=/")
+            self.response.headers.add_header("Set-Cookie",
+                "user_id=; Path=/")
+            self.response.headers.add_header("Set-Cookie",
+                "current_user=; Path=/")
             self.redirect("/blog/login")
 
 
-app = webapp2.WSGIApplication([('/', MainPage),
-                               ('/blog/signup', Signup),
-                               ('/blog/?', BlogFront),
-                               ('/blog/([0-9]+)', PostPage),
-                               ('/blog/newpost', NewPost),
-                               ('/blog/login', Login),
-                               ('/blog/logout', Logout),
-                               ('/blog/addwag', AddWag),
-                               ('/blog/removewag', RemoveWag),
+app = webapp2.WSGIApplication([("/", MainPage),
+                               ("/blog/signup", Signup),
+                               ("/blog/?", BlogFront),
+                               ("/blog/([0-9]+)", PostPage),
+                               ("/blog/newpost", NewPost),
+                               ("/blog/login", Login),
+                               ("/blog/logout", Logout),
+                               ("/blog/addwag", AddWag),
+                               ("/blog/removewag", RemoveWag),
                                ("/blog/deletepost", DeletePost),
                                ("/blog/editpost", EditPost),
                                ("/blog/addcomment", AddComment),

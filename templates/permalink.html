@@ -1,124 +1,159 @@
-
 {% extends "base.html" %}
-
 {% block content %}
-  {{post.render() | safe}}
-        <div class="row">
-  {% if post.poster == current_user %}
-        <div class="col-md-1">
-        <form action="/blog/editpost" method="post">
-            <input type="hidden" name = "subject" value = "{{post.subject}}">
-            <input type="hidden" name = "content" value = "{{post.content}}">
-            <input type="hidden" name = "post_key" value = "{{post.key().id()}}">
-            <input type="button" value="Edit Post" name="edit_post" onClick = "this.form.submit();">
-        </form>
-      </div>
-
-      <div class="col-md-2">
-        <form action="/blog/deletepost" method="post">
-            <input type = "hidden" name = "post_key" value = "{{post.key().id()}}">
-                    <div class="text-center">
-            <input type="button" value="Delete Post" name="delete_post" onClick = "this.form.submit();">
-          </div>
-        </form>
-      </div>
-  {% endif %}
-<div class="col-md-1">
-
-  {% if not current_user %}
-          <input type="button[disabled]" class="disabled" alt="Log in to Comment" name = "comment_disabled" value = "Log in to Comment" title = "Log in to Comment" disabled>
-  {% else %}
-  <!--this text is blue because it's a link-->
-          <a href = "/blog/{{post.key().id()}}?comment=True">
-              <input type="button" alt="Comment on post" name = "comment_on_post" value = "Comment" title = "Click to Comment on post" onClick = "this.form.submit();">
-          </a>
-  {% endif %}
-</div>
-</div>
-
-<div class="row">
-  <div class="col-md-12">
-  <a href = "/blog#{{post.key().id()}}">
-    <input type="button" alt="Back to List" name = "back_to_list" value = "Back to List" title = "Click to Go Back to List">
-</a>
-</div>
-</div>
-
-  <hr>
-
-  <div class="row">
-    <div class="col-md-12">
-      <h2>Comments:</h2>
-    </div>
-  </div>
-
-  {% if comment_list=="No Comments" %}
-    {{comment_list}}
-  {% else %}
-
-    {% for c in comment_list %}
+    {{post.render() | safe}}
     <div class="row">
-      <div class="col-md-12 post-date text-left remove-padding">
-        {{c.created.strftime("%b %d, %Y")}} by {{c.comment_user}}
-      </div>
+        {% if post.poster == current_user %}
+            <div class = "col-md-1">
+                <form action = "/blog/editpost" method = "post">
+                    <input type = "hidden" name = "subject"
+                        value = "{{post.subject}}">
+                    <input type = "hidden" name = "content"
+                        value = "{{post.content}}">
+                    <input type = "hidden" name = "post_key"
+                        value = "{{post.key().id()}}">
+                    <input type = "button" value = "Edit Post"
+                        name = "edit_post" onClick = "this.form.submit();">
+                </form>
+            </div>
+            <div class = "col-md-2">
+                <form action = "/blog/deletepost" method = "post">
+                    <input type = "hidden"
+                        name = "post_key"
+                        value = "{{post.key().id()}}">
+                        <div class = "text-center">
+                            <input type = "button"
+                                value = "Delete Post"
+                                name = "delete_post"
+                                onClick = "this.form.submit();">
+                        </div>
+                </form>
+            </div>
+        {% endif %}
+        <div class = "col-md-1">
+            {% if not current_user %}
+                <input type = "button[disabled]"
+                    class = "disabled"
+                    alt = "Log in to Comment"
+                    name = "comment_disabled"
+                    value = "Log in to Comment"
+                    title = "Log in to Comment" disabled>
+            {% else %}
+                <a href = "/blog/{{post.key().id()}}?comment=True">
+                    <input type = "button"
+                        alt = "Comment on post"
+                        name = "comment_on_post"
+                        value = "Comment"
+                        title = "Click to Comment on post"
+                        onClick = "this.form.submit();">
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    <div class = "row">
+        <div class = "col-md-12">
+            <a href = "/blog#{{post.key().id()}}">
+                <input type = "button"
+                    alt = "Back to List"
+                    name = "back_to_list"
+                    value = "Back to List"
+                    title = "Click to Go Back to List">
+            </a>
+        </div>
     </div>
     <hr>
-      <div class="row">
-        <div class="col-md-12 post-content remove-padding">
-        {{c.comment_text}}
+    <div class = "row">
+        <div class = "col-md-12">
+            <h2>Comments:</h2>
         </div>
-      </div>
-
-          {% if current_user == c.comment_user %}
-        <div class="row">
-            <div class="col-md-2">
-                <form action="/blog/editcomment" method="post">
-                    <input type="hidden" name="current_user" value="{{current_user}}">
-                    <input type = "hidden" name = "post_key" value = "{{post.key().id()}}">
-                    <input type = "hidden" name = "comment_key" value = "{{c.key().id()}}">
-                    <input type = "hidden" name = "comment_text" value = "{{c.comment_text}}">
-                    <input type="button" value="Edit Comment" name="edit_comment" onClick = "this.form.submit();">
-                </form>
+    </div>
+    {% if comment_list == "No Comments" %}
+        {{comment_list}}
+    {% else %}
+        {% for c in comment_list %}
+            <div class = "row">
+                <div class = "col-md-12 post-date text-left remove-padding">
+                    {{c.created.strftime("%b %d, %Y")}} by {{c.comment_user}}
+                </div>
             </div>
-            <div class="col-md-2">
-                <form action="/blog/deletecomment" method="post">
-                    <input type = "hidden" name = "post_key" value = "{{post.key().id()}}">
-                    <input type = "hidden" name = "comment_key" value = "{{c.key().id()}}">
-                    <input type="button" value="Delete Comment" name="delete_comment" onClick = "this.form.submit();">
-                </form>
+            <hr>
+            <div class = "row">
+                <div class = "col-md-12 post-content remove-padding">
+                    {{c.comment_text}}
+                </div>
             </div>
-        </div>
-        {% endif %}
-
-    {% endfor %}
+                {% if current_user == c.comment_user %}
+                    <div class = "row">
+                        <div class = "col-md-2">
+                            <form action = "/blog/editcomment" method = "post">
+                                <input type = "hidden"
+                                    name="current_user"
+                                    value="{{current_user}}">
+                                <input type = "hidden"
+                                    name = "post_key"
+                                    value = "{{post.key().id()}}">
+                                <input type = "hidden"
+                                    name = "comment_key"
+                                    value = "{{c.key().id()}}">
+                                <input type = "hidden"
+                                    name = "comment_text"
+                                    value = "{{c.comment_text}}">
+                                <input type = "button"
+                                    value = "Edit Comment"
+                                    name = "edit_comment"
+                                    onClick = "this.form.submit();">
+                            </form>
+                        </div>
+                        <div class = "col-md-2">
+                            <form action = "/blog/deletecomment" method = "post">
+                                <input type = "hidden"
+                                    name = "post_key"
+                                    value = "{{post.key().id()}}">
+                                <input type = "hidden"
+                                    name = "comment_key"
+                                    value = "{{c.key().id()}}">
+                                <input type = "button"
+                                    value = "Delete Comment"
+                                    name = "delete_comment"
+                                    onClick = "this.form.submit();">
+                            </form>
+                        </div>
+                    </div>
+                {% endif %}
+        {% endfor %}
     {% endif %}
-
-  {% if comment %}
-    <div class="row">
-      <div class="col-md-12">
-          <form action="/blog/addcomment" method="post">
-            <label>
-              Add a Comment
-          </label>
-            <textarea name="comment" class="post-content" style="width: 500px; height: 100px;"></textarea>
-          </div>
+    {% if comment %}
+        <div class = "row">
+            <div class = "col-md-12">
+                <form action = "/blog/addcomment" method="post">
+                    <label>Add a Comment</label>
+                    <textarea name = "comment"
+                        class = "post-content comment-box"></textarea>
+            </div>
         </div>
         <div class="row">
-          <div class="col-md-2">
-
-          <input type="button" value="Add Comment" name="add_comment" OnClick="this.form.submit();">
-          <input type="hidden" name="current_user" value="{{current_user}}">
-          <input type="hidden" name="post_key" value="{{post.key().id()}}">
-        </form>
+            <div class="col-md-2">
+                <input type = "button"
+                    value = "Add Comment"
+                    name = "add_comment"
+                    OnClick = "this.form.submit();">
+                <input type = "hidden"
+                    name = "current_user"
+                    value = "{{current_user}}">
+                <input type = "hidden"
+                    name = "post_key"
+                    value = "{{post.key().id()}}">
+                </form>
+            </div>
+            <div class="col-md-2">
+                <a href = "/blog/{{post.key().id()}}">
+                    <input type = "button"
+                        alt = "Cancel Comment"
+                        name = "cancel_comment"
+                        value = "Cancel Comment"
+                        title = "Click to Cancel Comment">
+                </a>
+            </div>
         </div>
-  <div class="col-md-2">
-  <a href = "/blog/{{post.key().id()}}">
-    <input type="button" alt="Cancel Comment" name = "cancel_comment" value = "Cancel Comment" title = "Click to Cancel Comment">
-</a>
-</div>
-      </div>
-
-  {% endif %}
-
+    {% endif %}
 {% endblock %}
 
