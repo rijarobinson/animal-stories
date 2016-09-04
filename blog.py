@@ -44,46 +44,80 @@ class Wags(db.Model):
     last_modified = db.DateTimeProperty(auto_now = True)
 
 class AddWag(webapp2.RequestHandler):
+    def get(self):
+        logged_in = self.request.cookies.get("current_user")
+        if logged_in:
+            self.redirect("/blog")
+        else:
+            self.redirect("/blog/login")
+
     def post(self):
         wagged_user = self.request.cookies.get("current_user")
         wagged_post = self.request.get("post_key")
-        p = Wags(parent = blog_key(), wagged_user = wagged_user,
-            wagged_post = wagged_post)
-        p.put()
+        logged_in = self.request.cookies.get("current_user")
+        if logged_in:
+            p = Wags(parent = blog_key(), wagged_user = wagged_user,
+                wagged_post = wagged_post)
+            p.put()
 
-# updates wag field.
-        post_to_wag = Post.get_by_id(int(wagged_post), parent = blog_key())
-        current_wags = post_to_wag.wags
-        new_wags = current_wags + 1
-        post_to_wag.wags = new_wags
-        post_to_wag.put()
-        self.redirect("/blog#" + wagged_post)
+    # updates wag field.
+            post_to_wag = Post.get_by_id(int(wagged_post), parent = blog_key())
+            current_wags = post_to_wag.wags
+            new_wags = current_wags + 1
+            post_to_wag.wags = new_wags
+            post_to_wag.put()
+            self.redirect("/blog#" + wagged_post)
+        else:
+            self.redirect("/blog/login")
 
 class RemoveWag(webapp2.RequestHandler):
+    def get(self):
+        logged_in = self.request.cookies.get("current_user")
+        if logged_in:
+            self.redirect("/blog")
+        else:
+            self.redirect("/blog/login")
+
     def post(self):
         unwagged_user = self.request.cookies.get("current_user")
         unwagged_post = self.request.get("post_key")
-        unwag = db.GqlQuery("SELECT * from Wags WHERE wagged_post = :1 "
-            + "AND wagged_user = :2", unwagged_post, unwagged_user)
-        db.delete(unwag)
-        post_to_unwag = Post.get_by_id(int(unwagged_post), parent = blog_key())
-        current_wags = post_to_unwag.wags
-        new_wags = (current_wags - 1)
-        post_to_unwag.wags = new_wags
-        post_to_unwag.put()
-        self.redirect("/blog#" + unwagged_post)
+        # in this method, unwagged user also gets the logged in user
+        if unwagged_user:
+            unwag = db.GqlQuery("SELECT * from Wags WHERE wagged_post = :1 "
+                + "AND wagged_user = :2", unwagged_post, unwagged_user)
+            db.delete(unwag)
+            post_to_unwag = Post.get_by_id(int(unwagged_post), parent = blog_key())
+            current_wags = post_to_unwag.wags
+            new_wags = (current_wags - 1)
+            post_to_unwag.wags = new_wags
+            post_to_unwag.put()
+            time.sleep(0.2)
+            self.redirect("/blog#" + unwagged_post)
+        else:
+            self.redirect("/blog/login")
 
 class DeletePost(webapp2.RequestHandler):
+    def get(self):
+        logged_in = self.request.cookies.get("current_user")
+        if logged_in:
+            self.redirect("/blog")
+        else:
+            self.redirect("/blog/login")
+
     def post(self):
         user_who_deleted = self.request.cookies.get("current_user")
         post_to_delete = self.request.get("post_key")
-        delete_record = Post.get_by_id(int(post_to_delete),
-            parent = blog_key())
-        db.delete(delete_record)
-        delete_related_comments=db.GqlQuery("SELECT * from Comments WHERE "
-            + "comment_post = :1", post_to_delete)
-        db.delete(delete_related_comments)
-        self.redirect("/blog")
+        # user_who_deleted gets the current logged in user
+        if user_who_deleted:
+            delete_record = Post.get_by_id(int(post_to_delete),
+                parent = blog_key())
+            db.delete(delete_record)
+            delete_related_comments=db.GqlQuery("SELECT * from Comments WHERE "
+                + "comment_post = :1", post_to_delete)
+            db.delete(delete_related_comments)
+            self.redirect("/blog")
+        else:
+            self.redirect("/blog/login")
 
 class Comments(db.Model):
     comment_user = db.StringProperty()
@@ -93,14 +127,25 @@ class Comments(db.Model):
     last_modified = db.DateTimeProperty(auto_now = True)
 
 class DeleteComment(webapp2.RequestHandler):
+    def get(self):
+        logged_in = self.request.cookies.get("current_user")
+        if logged_in:
+            self.redirect("/blog")
+        else:
+            self.redirect("/blog/login")
+
     def post(self):
         user_who_deleted = self.request.cookies.get("current_user")
         comment_to_delete = self.request.get("comment_key")
         current_post = self.request.get("post_key")
-        delete_record = Comments.get_by_id(int(comment_to_delete),
-            parent = blog_key())
-        db.delete(delete_record)
-        self.redirect("/blog/" + current_post)
+        # user_who_deleted gets the current logged in user
+        if user_who_deleted:
+            delete_record = Comments.get_by_id(int(comment_to_delete),
+                parent = blog_key())
+            db.delete(delete_record)
+            self.redirect("/blog/" + current_post)
+        else:
+            self.redirect("/blog/login")
 
 # generate random string for password
 def make_salt(length = 5):
@@ -147,7 +192,6 @@ class BlogHandler(webapp2.RequestHandler):
             "Set-Cookie",
             "%s = %s; Path = /" % (name,cookie_val))
 
-
     def login(self, user):
         self.set_secure_cookie("user_id", str(user.key().id()))
 
@@ -158,7 +202,7 @@ def render_post(response, post):
 
 class MainPage(BlogHandler):
   def get(self):
-      self.write("Hello, Udacity!")
+      self.redirect("/blog")
 
 # set blog key in case we decide to have additional blogs
 def blog_key(name = "default"):
@@ -197,60 +241,114 @@ class BlogFront(BlogHandler):
             front_page = front_page)
 
 class EditPost(BlogHandler):
+    def get(self):
+        poster = self.request.get("poster")
+        post_to_edit = self.request.get("post_key")
+        subject = self.request.get("subject")
+        content = self.request.get("content")
+        logged_in = self.request.cookies.get("current_user")
+        if logged_in:
+            if post_to_edit:
+                self.render("editpost.html", subject = subject, content = content,
+                    poster = poster, post_to_edit = post_to_edit, newpost_page = 1,
+                    logged_in = logged_in)
+            else:
+                self.redirect("/blog")
+        else:
+            self.redirect("/blog/login")
+
     def post(self):
         poster = self.request.get("poster")
         post_to_edit = self.request.get("post_key")
         subject = self.request.get("subject")
         content = self.request.get("content")
         logged_in = self.request.cookies.get("current_user")
-        self.render("newpost.html", subject = subject, content = content,
-            poster = poster, post_to_edit = post_to_edit, newpost_page = 1,
-            logged_in = logged_in)
+        if logged_in:
+            self.render("editpost.html", subject = subject, content = content,
+                poster = poster, post_to_edit = post_to_edit, newpost_page = 1,
+                logged_in = logged_in)
+        else:
+            self.redirect("/blog/login")
 
 class AddComment(BlogHandler):
+    def get(self):
+        logged_in = self.request.cookies.get("current_user")
+        if logged_in:
+            self.redirect("/blog")
+        else:
+            self.redirect("/blog/login")
+
     def post(self):
         comment_user = self.request.cookies.get("current_user")
         comment_post = self.request.get("post_key")
         comment_text = self.request.get("comment")
-        if comment_text:
-            c = Comments(parent = blog_key(), comment_user = comment_user,
-                comment_post = comment_post, comment_text=comment_text)
-            c.put()
-            self.redirect("/blog/" + comment_post)
+        # comment_user also contains logged in user info
+        if comment_user:
+            if comment_text:
+                c = Comments(parent = blog_key(), comment_user = comment_user,
+                    comment_post = comment_post, comment_text=comment_text)
+                c.put()
+                self.redirect("/blog/" + comment_post)
+            else:
+                #TODO: add error if no text added
+                self.redirect("/blog/" + comment_post + "?comment=True")
         else:
-            #TODO: add error if no text added
-            self.redirect("/blog/" + comment_post + "?comment=True")
+            self.redirect("/blog/login")
 
 
 class EditComment(BlogHandler):
+    def get(self):
+        logged_in = self.request.cookies.get("current_user")
+        if logged_in:
+            self.redirect("/blog")
+        else:
+            self.redirect("/blog/login")
+
     def post(self):
         current_user = self.request.cookies.get("current_user")
         current_post = self.request.get("post_key")
         comment_to_edit = self.request.get("comment_key")
         comment_text = self.request.get("comment_text")
-        self.render("editcomment.html", current_user = current_user,
-            current_post = current_post, comment_to_edit = comment_to_edit,
-            comment_text = comment_text)
+        # current_user contains login info
+        if current_user:
+            self.render("editcomment.html", current_user = current_user,
+                current_post = current_post, comment_to_edit = comment_to_edit,
+                comment_text = comment_text)
+        else:
+            self.redirect("/blog/login")
 
 class SaveComment(BlogHandler):
+    def get(self):
+        logged_in = self.request.cookies.get("current_user")
+        if logged_in:
+            self.redirect("/blog")
+        else:
+            self.redirect("/blog/login")
+
     def post(self):
         current_user = self.request.cookies.get("current_user")
         current_post = self.request.get("post_key")
         comment_to_edit=self.request.get("comment_key")
         comment_text = self.request.get("comment")
-        if comment_to_edit:
-            if comment_text:
-                edit_record = Comments.get_by_id(int(comment_to_edit),
-                    parent = blog_key())
-                edit_record.comment_text = comment_text
-                edit_record.put()
-                self.redirect("/blog/" + current_post)
+        # current_user contains login info
+        if current_user:
+            if comment_to_edit:
+                if comment_text:
+                    edit_record = Comments.get_by_id(int(comment_to_edit),
+                        parent = blog_key())
+                    edit_record.comment_text = comment_text
+                    edit_record.put()
+                    self.redirect("/blog/" + current_post)
+                else:
+                    error = "Please enter the comment."
+                    self.render("editcomment.html", current_user = current_user,
+                        current_post = current_post,
+                        comment_to_edit = comment_to_edit,
+                        error = error, comment_text = comment_text)
             else:
-                error = "Please enter the comment."
-                self.render("editcomment.html", current_user = current_user,
-                    current_post = current_post,
-                    comment_to_edit = comment_to_edit,
-                    error = error, comment_text = comment_text)
+                self.redirect("blog/" + post_key)
+        else:
+            self.redirect("blog/login")
 
 
 class WelcomeRedirect(webapp2.RequestHandler):
@@ -283,7 +381,7 @@ class NewPost(BlogHandler):
     def get(self):
         poster = self.request.get("poster")
         logged_in = self.request.cookies.get("current_user")
-        if not poster:
+        if not logged_in:
             self.redirect("/blog")
         else:
             self.render("newpost.html", poster = poster, newpost_page=1,
@@ -297,30 +395,33 @@ class NewPost(BlogHandler):
         # otherwise, the inputs will fill with the values of the post
         post_to_edit = self.request.get("post_to_edit")
         logged_in = self.request.cookies.get("current_user")
-        if post_to_edit:
-            if subject and content:
-                edit_record = Post.get_by_id(int(post_to_edit),
-                    parent = blog_key())
-                edit_record.subject = subject
-                edit_record.content = content
-                edit_record.put()
-                self.redirect("/blog/" + post_to_edit)
+        if logged_in:
+            if post_to_edit:
+                if subject and content:
+                    edit_record = Post.get_by_id(int(post_to_edit),
+                        parent = blog_key())
+                    edit_record.subject = subject
+                    edit_record.content = content
+                    edit_record.put()
+                    self.redirect("/blog/" + post_to_edit)
+                else:
+                    error = "Please enter both a subject and content."
+                    self.render("editpost.html", subject = subject,
+                        content = content, poster = poster, error = error,
+                        post_to_edit = post_to_edit, logged_in = logged_in)
             else:
-                error = "Please enter both a subject and content."
-                self.render("newpost.html", subject = subject,
-                    content = content, poster = poster, error = error,
-                    post_to_edit = post_to_edit, logged_in = logged_in)
+                if subject and content:
+                    p = Post(parent = blog_key(), subject = subject,
+                        content = content, poster = poster)
+                    p.put()
+                    self.redirect("/blog/%s" % str(p.key().id()))
+                else:
+                    error = "Please enter both a subject and content."
+                    self.render("newpost.html", subject = subject,
+                        content = content, poster = poster,
+                        error = error, logged_in = logged_in)
         else:
-            if subject and content:
-                p = Post(parent = blog_key(), subject = subject,
-                    content = content, poster = poster)
-                p.put()
-                self.redirect("/blog/%s" % str(p.key().id()))
-            else:
-                error = "Please enter both a subject and content."
-                self.render("newpost.html", subject = subject,
-                    content = content, poster = poster,
-                    error = error, logged_in = logged_in)
+            self.redirect("blog/login")
 
 
 # functions to validate username, password, and email
