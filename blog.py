@@ -18,6 +18,10 @@ import time
 # eventual consistency. This is a temporary fix until
 # I can better understand ancestor queries
 
+## TODO from 9/7- added requests for mcsaved and micro_check for all
+## functions. Need to integrate if/then on most. Then thoroughly test.
+
+
 from google.appengine.ext import db
 
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
@@ -55,6 +59,8 @@ class AddWag(webapp2.RequestHandler):
         wagged_user = self.request.cookies.get("current_user")
         wagged_post = self.request.get("post_key")
         logged_in = self.request.cookies.get("current_user")
+        mcsaved = self.request.get("mcsaved")
+        micro_check = self.request.cookies.get("microchip")
         if logged_in:
             p = Wags(parent = blog_key(), wagged_user = wagged_user,
                 wagged_post = wagged_post)
@@ -81,6 +87,8 @@ class RemoveWag(webapp2.RequestHandler):
     def post(self):
         unwagged_user = self.request.cookies.get("current_user")
         unwagged_post = self.request.get("post_key")
+        mcsaved = self.request.get("mcsaved")
+        micro_check = self.request.cookies.get("microchip")
         # in this method, unwagged user also gets the logged in user
         if unwagged_user:
             unwag = db.GqlQuery("SELECT * from Wags WHERE wagged_post = :1 "
@@ -107,6 +115,8 @@ class DeletePost(webapp2.RequestHandler):
     def post(self):
         user_who_deleted = self.request.cookies.get("current_user")
         post_to_delete = self.request.get("post_key")
+        mcsaved = self.request.get("mcsaved")
+        micro_check = self.request.cookies.get("microchip")
         # user_who_deleted gets the current logged in user
         if user_who_deleted:
             delete_record = Post.get_by_id(int(post_to_delete),
@@ -129,6 +139,8 @@ class Comments(db.Model):
 class DeleteComment(webapp2.RequestHandler):
     def get(self):
         logged_in = self.request.cookies.get("current_user")
+        mcsaved = self.request.get("mcsaved")
+        micro_check = self.request.cookies.get("microchip")
         if logged_in:
             self.redirect("/blog")
         else:
@@ -138,6 +150,8 @@ class DeleteComment(webapp2.RequestHandler):
         user_who_deleted = self.request.cookies.get("current_user")
         comment_to_delete = self.request.get("comment_key")
         current_post = self.request.get("post_key")
+        mcsaved = self.request.get("mcsaved")
+        micro_check = self.request.cookies.get("microchip")
         # user_who_deleted gets the current logged in user
         if user_who_deleted:
             delete_record = Comments.get_by_id(int(comment_to_delete),
@@ -150,6 +164,12 @@ class DeleteComment(webapp2.RequestHandler):
 # generate random string for password
 def make_salt(length = 5):
     return "".join(random.choice(string.lowercase) for i in range(length))
+
+def make_microchip_hash(msalt = None):
+    if not msalt:
+        msalt = make_salt()
+    hm = hashlib.sha256(msalt).hexdigest()
+    return hm
 
 def make_pw_hash(username, password, salt = None):
     if not salt:
@@ -230,6 +250,7 @@ class BlogFront(BlogHandler):
         front_page=1
         logged_in = self.request.cookies.get("current_user")
         current_user = self.request.cookies.get("current_user")
+        mcsaved = self.request.get("mcsaved")
         user_wags = db.GqlQuery("SELECT wagged_post from Wags WHERE "
             + "wagged_user = :1", current_user)
         myList = []
@@ -238,7 +259,7 @@ class BlogFront(BlogHandler):
             time.sleep(0.2)
         self.render("front.html", posts = posts, logged_in = logged_in,
             current_user = current_user, myList = myList,
-            front_page = front_page)
+            front_page = front_page, mcsaved = mcsaved)
 
 class EditPost(BlogHandler):
     def get(self):
@@ -247,11 +268,13 @@ class EditPost(BlogHandler):
         subject = self.request.get("subject")
         content = self.request.get("content")
         logged_in = self.request.cookies.get("current_user")
+        mcsaved = self.request.get("mcsaved")
+        micro_check = self.request.cookies.get("microchip")
         if logged_in:
             if post_to_edit:
                 self.render("editpost.html", subject = subject, content = content,
                     poster = poster, post_to_edit = post_to_edit, newpost_page = 1,
-                    logged_in = logged_in)
+                    logged_in = logged_in, mcsaved = mcsaved)
             else:
                 self.redirect("/blog")
         else:
@@ -263,16 +286,20 @@ class EditPost(BlogHandler):
         subject = self.request.get("subject")
         content = self.request.get("content")
         logged_in = self.request.cookies.get("current_user")
+        mcsaved = self.request.get("mcsaved")
+        micro_check = self.request.cookies.get("microchip")
         if logged_in:
             self.render("editpost.html", subject = subject, content = content,
                 poster = poster, post_to_edit = post_to_edit, newpost_page = 1,
-                logged_in = logged_in)
+                logged_in = logged_in, mcsaved = mcsaved)
         else:
-            self.redirect("/blog/login")
+            self.redirect("/login")
 
 class AddComment(BlogHandler):
     def get(self):
         logged_in = self.request.cookies.get("current_user")
+        mcsaved = self.request.get("mcsaved")
+        micro_check = self.request.cookies.get("microchip")
         if logged_in:
             self.redirect("/blog")
         else:
@@ -282,11 +309,14 @@ class AddComment(BlogHandler):
         comment_user = self.request.cookies.get("current_user")
         comment_post = self.request.get("post_key")
         comment_text = self.request.get("comment")
+        mcsaved = self.request.get("mcsaved")
+        micro_check = self.request.cookies.get("microchip")
         # comment_user also contains logged in user info
         if comment_user:
             if comment_text:
                 c = Comments(parent = blog_key(), comment_user = comment_user,
-                    comment_post = comment_post, comment_text=comment_text)
+                    comment_post = comment_post, comment_text=comment_text,
+                    mcsaved = mcsaved)
                 c.put()
                 self.redirect("/blog/" + comment_post)
             else:
@@ -299,6 +329,8 @@ class AddComment(BlogHandler):
 class EditComment(BlogHandler):
     def get(self):
         logged_in = self.request.cookies.get("current_user")
+        mcsaved = self.request.get("mcsaved")
+        micro_check = self.request.cookies.get("microchip")
         if logged_in:
             self.redirect("/blog")
         else:
@@ -309,11 +341,13 @@ class EditComment(BlogHandler):
         current_post = self.request.get("post_key")
         comment_to_edit = self.request.get("comment_key")
         comment_text = self.request.get("comment_text")
+        mcsaved = self.request.get("mcsaved")
+        micro_check = self.request.cookies.get("microchip")
         # current_user contains login info
         if current_user:
             self.render("editcomment.html", current_user = current_user,
                 current_post = current_post, comment_to_edit = comment_to_edit,
-                comment_text = comment_text)
+                comment_text = comment_text, mcsaved = mcsaved)
         else:
             self.redirect("/blog/login")
 
@@ -330,6 +364,8 @@ class SaveComment(BlogHandler):
         current_post = self.request.get("post_key")
         comment_to_edit=self.request.get("comment_key")
         comment_text = self.request.get("comment")
+        mcsaved = self.request.get("mcsaved")
+        micro_check = self.request.cookies("microchip")
         # current_user contains login info
         if current_user:
             if comment_to_edit:
@@ -344,7 +380,8 @@ class SaveComment(BlogHandler):
                     self.render("editcomment.html", current_user = current_user,
                         current_post = current_post,
                         comment_to_edit = comment_to_edit,
-                        error = error, comment_text = comment_text)
+                        error = error, comment_text = comment_text,
+                        mcsaved = mcsaved)
             else:
                 self.redirect("blog/" + post_key)
         else:
@@ -361,6 +398,7 @@ class PostPage(BlogHandler):
         key = db.Key.from_path("Post", int(post_id), parent = blog_key())
         post = db.get(key)
         logged_in = self.request.cookies.get("current_user")
+        mcsaved = self.request.get("mcsaved")
         comments_to_show = db.GqlQuery("SELECT * from Comments WHERE "
             + "comment_post = :1 ORDER BY created ASC", post_id)
         comment_list_count = comments_to_show.count()
@@ -373,19 +411,23 @@ class PostPage(BlogHandler):
             return
         time.sleep(0.2)
         self.render("permalink.html", post = post, comment_list = comment_list,
-            permalink_page = 1, logged_in = logged_in)
+            permalink_page = 1, logged_in = logged_in, mcsaved = mcsaved)
 
 
 # pertaining to creating a new post
 class NewPost(BlogHandler):
     def get(self):
         poster = self.request.get("poster")
-        logged_in = self.request.cookies.get("current_user")
-        if not logged_in:
-            self.redirect("/blog")
+        logged_in = self.request.get("logged_in")
+        micro_check = self.request.cookies.get("microchip")
+        mcsaved = self.request.get("mcsaved")
+        if logged_in:
+            self.render("newpost.html", poster = poster, newpost_page = 1,
+                logged_in = logged_in, mcsaved = mcsaved)
         else:
-            self.render("newpost.html", poster = poster, newpost_page=1,
-                logged_in = logged_in)
+            #self.response.out.write(poster + "<br>" + micro_check)
+            self.redirect("/blog/login")
+
 
     def post(self):
         poster = self.request.get("poster")
@@ -395,6 +437,8 @@ class NewPost(BlogHandler):
         # otherwise, the inputs will fill with the values of the post
         post_to_edit = self.request.get("post_to_edit")
         logged_in = self.request.cookies.get("current_user")
+        mcsaved = self.request.get("mcsaved")
+        micro_check = self.request.cookies.get("microchip")
         if logged_in:
             if post_to_edit:
                 if subject and content:
@@ -408,7 +452,8 @@ class NewPost(BlogHandler):
                     error = "Please enter both a subject and content."
                     self.render("editpost.html", subject = subject,
                         content = content, poster = poster, error = error,
-                        post_to_edit = post_to_edit, logged_in = logged_in)
+                        post_to_edit = post_to_edit, logged_in = logged_in,
+                        mcsaved = mcsaved)
             else:
                 if subject and content:
                     p = Post(parent = blog_key(), subject = subject,
@@ -419,7 +464,8 @@ class NewPost(BlogHandler):
                     error = "Please enter both a subject and content."
                     self.render("newpost.html", subject = subject,
                         content = content, poster = poster,
-                        error = error, logged_in = logged_in)
+                        error = error, logged_in = logged_in,
+                        mcsaved = mcsaved)
         else:
             self.redirect("blog/login")
 
@@ -502,10 +548,13 @@ class Signup(BlogHandler):
             self.login(u)
             self.response.headers.add_header("Set-Cookie",
                 "%s = %s; Path = /" % ("current_user", str(self.username)))
+            mcsaved = make_microchip_hash()
+            self.response.headers.add_header("Set-Cookie",
+                "%s = %s; Path = /" % ("microchip", mcsaved))
             logged_in = self.username
             referred = 1
             self.render("welcome.html", username = self.username,
-                referred = referred, logged_in = logged_in)
+                referred = referred, logged_in = logged_in, mcsaved = mcsaved)
 
 class Login(BlogHandler):
     def get(self):
@@ -534,10 +583,15 @@ class Login(BlogHandler):
                 self.response.headers.add_header(
                     "Set-Cookie",
                     "%s = %s; Path= /" % ("current_user", this_user))
+                mcsaved = make_microchip_hash()
+                self.response.headers.add_header(
+                    "Set-Cookie",
+                    "%s = %s; Path= /" % ("microchip", mcsaved))
                 logged_in = this_user
                 referred = 2
                 self.render("welcome.html", username = username,
-                    referred = referred,welcome_page = 1, logged_in = logged_in)
+                    referred = referred, welcome_page = 1, logged_in = logged_in,
+                    mcsaved = mcsaved)
             else:
                 params['error_password'] = "Please check your password."
                 have_error = True
@@ -549,6 +603,8 @@ class Logout(BlogHandler):
                 "user_id=; Path=/")
             self.response.headers.add_header("Set-Cookie",
                 "current_user=; Path=/")
+            self.response.headers.add_header("Set-Cookie",
+                "microchip=; Path=/")
             self.redirect("/blog/login")
 
 

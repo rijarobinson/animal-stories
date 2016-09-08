@@ -18,11 +18,15 @@
                 value = "{{current_post}}">
             <input type = "hidden" name = "comment_key"
                 value = "{{comment_to_edit}}">
+            <input type = "hidden" name = "mcsaved"
+                value = "{{ mcsaved }}">
             <input type = "button" value = "Save Change"
                 name = "change_comment" OnClick = "this.form.submit();">
         </div>
         <div class = "col-md-2">
             <a href = "/blog">
+                <input type = "hidden" name = "mcsaved"
+                        value = "{{ mcsaved }}">
                 <input type = "button" alt = "View Posts"
                     name = "view_posts" value = "Cancel and View Posts"
                     title = "Click to List of Posts">
