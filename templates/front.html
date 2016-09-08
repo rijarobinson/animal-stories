@@ -15,8 +15,6 @@
             <form action = "/blog/newpost">
                 <input type = "hidden" name = "poster"
                     value = "{{ current_user }}">
-                <input type = "hidden" name = "mcsaved"
-                    value = "{{ mcsaved }}">
                 <input type = "button" name="create_new_post"
                     value = "Create a New Post" OnClick="this.form.submit();">
             </form>
@@ -38,8 +36,6 @@
                         value = "{{p.content}}">
                     <input type="hidden" name="poster"
                         value="{{p.poster}}">
-                    <input type = "hidden" name = "mcsaved"
-                        value = "{{ mcsaved }}">
                     <input type="button" value="Edit Post" name="edit_post"
                         onClick = "this.form.submit();">
                 </form>
@@ -48,8 +44,6 @@
                 <form action = "/blog/deletepost" method="post">
                     <input type = "hidden" name = "post_key"
                         value = "{{p.key().id()}}">
-                    <input type = "hidden" name = "mcsaved"
-                        value = "{{ mcsaved }}">
                     <input type="button" value="Delete Post" name="delete_post"
                         onClick = "this.form.submit();">
                 </form>
@@ -63,13 +57,9 @@
                 <input type = "button" alt = "Log In to Comment"
                     name = "login_to_comment" value = "Log In to Comment"
                     title = "Log In to Comment">
-                <input type = "hidden" name = "mcsaved"
-                    value = "{{ mcsaved }}">
             </a>
         {% else %}
             <a href = "/blog/{{p.key().id()}}?comment=True">
-                <input type = "hidden" name = "mcsaved"
-                    value = "{{ mcsaved }}">
                 <input type = "button" alt = "Comment on post"
                     name = "comment_on_post" value = "Comment"
                     title = "Click to Comment on post"
@@ -82,8 +72,6 @@
                 <input type = "button" alt = "View Comments"
                     name = "view_comments" value = "View Comments"
                     title = "Click to View Comments">
-                <input type = "hidden" name = "mcsaved"
-                    value = "{{ mcsaved }}">
             </a>
         </div>
     </div>
@@ -124,8 +112,6 @@
                     <form method = "post" action = "/blog/removewag">
                         <input type = "hidden" name = "post_key"
                             value = "{{p.key().id()}}">
-                        <input type = "hidden" name = "mcsaved"
-                            value = "{{ mcsaved }}">
                         <div class="text-right">
                             <input type="image"
                                 src="../images/wag_button_wagged.png"
@@ -148,8 +134,6 @@
                     <form method = "post" action = "/blog/addwag">
                         <input type = "hidden" name = "post_key"
                             value = "{{p.key().id()}}">
-                        <input type = "hidden" name = "mcsaved"
-                            value = "{{ mcsaved }}">
                         <div class="text-right">
                             <input type="image" src="../images/wag_button.png"
                             alt="Click to Wag at this post" name = "wag_at_post"

@@ -75,10 +75,7 @@
             {% if not front_page and not welcome_page and
                 not newpost_page and not permalink_page %}
                 <div class = "col-md-1 text-right">
-                    {{ mcsaved }}
                     <form action = "/blog">
-                        <input type = "hidden" name = "mcsaved"
-                            value = "{{ mcsaved }}">
                         <input type = "button"
                             class = "text-center"
                             name = "return_to_list"

@@ -11,8 +11,6 @@
                         value = "{{post.content}}">
                     <input type = "hidden" name = "post_key"
                         value = "{{post.key().id()}}">
-                    <input type = "hidden" name = "mcsaved"
-                        value = "{{ mcsaved }}">
                     <input type = "button" value = "Edit Post"
                         name = "edit_post" onClick = "this.form.submit();">
                 </form>
@@ -22,8 +20,6 @@
                     <input type = "hidden"
                         name = "post_key"
                         value = "{{post.key().id()}}">
-                    <input type = "hidden" name = "mcsaved"
-                        value = "{{ mcsaved }}">
                         <div class = "text-center">
                             <input type = "button"
                                 value = "Delete Post"
@@ -42,8 +38,6 @@
             </a>
             {% else %}
                 <a href = "/blog/{{post.key().id()}}?comment=True">
-                    <input type = "hidden" name = "mcsaved"
-                        value = "{{ mcsaved }}">
                     <input type = "button"
                         alt = "Comment on post"
                         name = "comment_on_post"
@@ -62,8 +56,6 @@
                     name = "back_to_list"
                     value = "Back to List"
                     title = "Click to Go Back to List">
-                <input type = "hidden" name = "mcsaved"
-                    value = "{{ mcsaved }}">
             </a>
         </div>
     </div>
@@ -104,8 +96,6 @@
                                 <input type = "hidden"
                                     name = "comment_text"
                                     value = "{{c.comment_text}}">
-                                <input type = "hidden" name = "mcsaved"
-                                    value = "{{ mcsaved }}">
                                 <input type = "button"
                                     value = "Edit Comment"
                                     name = "edit_comment"
@@ -120,8 +110,6 @@
                                 <input type = "hidden"
                                     name = "comment_key"
                                     value = "{{c.key().id()}}">
-                                <input type = "hidden" name = "mcsaved"
-                                    value = "{{ mcsaved }}">
                                 <input type = "button"
                                     value = "Delete Comment"
                                     name = "delete_comment"
@@ -153,8 +141,6 @@
                 <input type = "hidden"
                     name = "post_key"
                     value = "{{post.key().id()}}">
-                <input type = "hidden" name = "mcsaved"
-                    value = "{{ mcsaved }}">
                 </form>
             </div>
             <div class="col-md-2">
@@ -164,8 +150,6 @@
                         name = "cancel_comment"
                         value = "Cancel Comment"
                         title = "Click to Cancel Comment">
-                    <input type = "hidden" name = "mcsaved"
-                        value = "{{ mcsaved }}">
                 </a>
             </div>
         </div>
