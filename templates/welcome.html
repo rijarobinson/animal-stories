@@ -16,7 +16,7 @@
 <div class = "row">
     <div class = "col-md-2">
         <form action = "/blog/newpost">
-            <input type = "hidden" name = "logged_in" value = {{ logged_in }}>
+            <input type = "hidden" name = "logged_in" value = "{{ logged_in }}">
             <input type = "hidden" name = "poster" value = {{ username }}>
             <input type = "button" name = "create_new_post"
                 value = "Create a New Post" OnClick="this.form.submit();">
@@ -24,7 +24,7 @@
     </div>
     <div class = "col-md-2">
         <form action = "/blog">
-            <input type = "hidden" name = "logged_in" value = {{ logged_in }}>
+            <input type = "hidden" name = "logged_in" value = "{{ logged_in }}">
             <input type = "hidden" name = "poster" value = {{ username }}>
             <input type = "button" name = "view_posts"
                 value = "View Posts"

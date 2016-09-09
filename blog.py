@@ -108,10 +108,12 @@ class DeletePost(webapp2.RequestHandler):
     def post(self):
         user_who_deleted = self.request.cookies.get("current_user")
         post_to_delete = self.request.get("post_key")
+        micro_check = self.request.cookies.get("microchip")
+        delete_record = Post.get_by_id(int(post_to_delete),
+            parent = blog_key())
+        post_poster = make_microchip_hash(delete_record.poster)
         # user_who_deleted gets the current logged in user
-        if user_who_deleted:
-            delete_record = Post.get_by_id(int(post_to_delete),
-                parent = blog_key())
+        if micro_check == post_poster:
             db.delete(delete_record)
             delete_related_comments=db.GqlQuery("SELECT * from Comments WHERE "
                 + "comment_post = :1", post_to_delete)
@@ -139,10 +141,12 @@ class DeleteComment(webapp2.RequestHandler):
         user_who_deleted = self.request.cookies.get("current_user")
         comment_to_delete = self.request.get("comment_key")
         current_post = self.request.get("post_key")
+        micro_check = self.request.cookies.get("microchip")
+        delete_record = Comments.get_by_id(int(comment_to_delete),
+            parent = blog_key())
+        comment_poster = make_microchip_hash(delete_record.comment_user)
         # user_who_deleted gets the current logged in user
-        if user_who_deleted:
-            delete_record = Comments.get_by_id(int(comment_to_delete),
-                parent = blog_key())
+        if micro_check == comment_poster:
             db.delete(delete_record)
             self.redirect("/blog/" + current_post)
         else:
@@ -152,10 +156,8 @@ class DeleteComment(webapp2.RequestHandler):
 def make_salt(length = 5):
     return "".join(random.choice(string.lowercase) for i in range(length))
 
-def make_microchip_hash(msalt = None):
-    if not msalt:
-        msalt = make_salt()
-    hm = hashlib.sha256(msalt).hexdigest()
+def make_microchip_hash(s):
+    hm = hash_str(s)
     return hm
 
 def make_pw_hash(username, password, salt = None):
@@ -254,7 +256,7 @@ class EditPost(BlogHandler):
         subject = self.request.get("subject")
         content = self.request.get("content")
         logged_in = self.request.cookies.get("current_user")
-        if logged_in:
+        if logged_in == poster:
             if post_to_edit:
                 self.render("editpost.html", subject = subject, content = content,
                     poster = poster, post_to_edit = post_to_edit, newpost_page = 1,
@@ -270,7 +272,7 @@ class EditPost(BlogHandler):
         subject = self.request.get("subject")
         content = self.request.get("content")
         logged_in = self.request.cookies.get("current_user")
-        if logged_in:
+        if logged_in == poster:
             self.render("editpost.html", subject = subject, content = content,
                 poster = poster, post_to_edit = post_to_edit, newpost_page = 1,
                 logged_in = logged_in)
@@ -316,8 +318,12 @@ class EditComment(BlogHandler):
         current_post = self.request.get("post_key")
         comment_to_edit = self.request.get("comment_key")
         comment_text = self.request.get("comment_text")
+        micro_check = self.request.cookies.get("microchip")
+        edit_record = Comments.get_by_id(int(comment_to_edit),
+            parent = blog_key())
+        post_owner = make_microchip_hash(edit_record.comment_user)
         # current_user contains login info
-        if current_user:
+        if micro_check == post_owner:
             self.render("editcomment.html", current_user = current_user,
                 current_post = current_post, comment_to_edit = comment_to_edit,
                 comment_text = comment_text)
@@ -337,12 +343,14 @@ class SaveComment(BlogHandler):
         current_post = self.request.get("post_key")
         comment_to_edit=self.request.get("comment_key")
         comment_text = self.request.get("comment")
+        micro_check = self.request.cookies.get("microchip")
+        edit_record = Comments.get_by_id(int(comment_to_edit),
+            parent = blog_key())
+        comment_owner = make_microchip_hash(edit_record.comment_user)
         # current_user contains login info
-        if current_user:
+        if micro_check == comment_owner:
             if comment_to_edit:
                 if comment_text:
-                    edit_record = Comments.get_by_id(int(comment_to_edit),
-                        parent = blog_key())
                     edit_record.comment_text = comment_text
                     edit_record.put()
                     self.redirect("/blog/" + current_post)
@@ -388,12 +396,10 @@ class NewPost(BlogHandler):
     def get(self):
         poster = self.request.get("poster")
         logged_in = self.request.get("logged_in")
-        micro_check = self.request.cookies.get("microchip")
         if logged_in:
             self.render("newpost.html", poster = poster, newpost_page = 1,
                 logged_in = logged_in)
         else:
-            #self.response.out.write(poster + "<br>" + micro_check)
             self.redirect("/blog/login")
 
 
@@ -403,13 +409,15 @@ class NewPost(BlogHandler):
         content = self.request.get("content")
         # post_to_edit variable is in case it is an edit, will be blank if new post
         # otherwise, the inputs will fill with the values of the post
-        post_to_edit = self.request.get("post_to_edit")
+        post_to_edit = self.request.get("post_key")
         logged_in = self.request.cookies.get("current_user")
-        if logged_in:
-            if post_to_edit:
+        micro_check = self.request.cookies.get("microchip")
+        if post_to_edit:
+            edit_record = Post.get_by_id(int(post_to_edit),
+                parent = blog_key())
+            post_poster = make_microchip_hash(edit_record.poster)
+            if micro_check == post_poster:
                 if subject and content:
-                    edit_record = Post.get_by_id(int(post_to_edit),
-                        parent = blog_key())
                     edit_record.subject = subject
                     edit_record.content = content
                     edit_record.put()
@@ -420,18 +428,18 @@ class NewPost(BlogHandler):
                         content = content, poster = poster, error = error,
                         post_to_edit = post_to_edit, logged_in = logged_in)
             else:
-                if subject and content:
-                    p = Post(parent = blog_key(), subject = subject,
-                        content = content, poster = poster)
-                    p.put()
-                    self.redirect("/blog/%s" % str(p.key().id()))
-                else:
-                    error = "Please enter both a subject and content."
-                    self.render("newpost.html", subject = subject,
-                        content = content, poster = poster,
-                        error = error, logged_in = logged_in)
+                self.redirect("/blog/login")
         else:
-            self.redirect("blog/login")
+            if subject and content:
+                p = Post(parent = blog_key(), subject = subject,
+                    content = content, poster = poster)
+                p.put()
+                self.redirect("/blog/%s" % str(p.key().id()))
+            else:
+                error = "Please enter both a subject and content."
+                self.render("newpost.html", subject = subject,
+                    content = content, poster = poster,
+                    error = error, logged_in = logged_in)
 
 
 # functions to validate username, password, and email
@@ -512,6 +520,8 @@ class Signup(BlogHandler):
             self.login(u)
             self.response.headers.add_header("Set-Cookie",
                 "%s = %s; Path = /" % ("current_user", str(self.username)))
+            self.response.headers.add_header("Set-Cookie",
+                "%s = %s; Path = /" % ("microchip", str(make_microchip_hash(self.username))))
             logged_in = self.username
             referred = 1
             self.render("welcome.html", username = self.username,
@@ -544,6 +554,9 @@ class Login(BlogHandler):
                 self.response.headers.add_header(
                     "Set-Cookie",
                     "%s = %s; Path= /" % ("current_user", this_user))
+                self.response.headers.add_header(
+                    "Set-Cookie",
+                    "%s = %s; Path= /" % ("microchip", make_microchip_hash(this_user)))
                 logged_in = this_user
                 referred = 2
                 self.render("welcome.html", username = username,
@@ -559,6 +572,8 @@ class Logout(BlogHandler):
                 "user_id=; Path=/")
             self.response.headers.add_header("Set-Cookie",
                 "current_user=; Path=/")
+            self.response.headers.add_header("Set-Cookie",
+                "microchip=; Path=/")
             self.redirect("/blog/login")
 
 

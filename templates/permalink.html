@@ -5,6 +5,8 @@
         {% if post.poster == current_user %}
             <div class = "col-md-1">
                 <form action = "/blog/editpost" method = "post">
+                    <input type = "hidden" name = "poster"
+                        value = "{{post.poster}}">
                     <input type = "hidden" name = "subject"
                         value = "{{post.subject}}">
                     <input type = "hidden" name = "content"
