@@ -221,6 +221,14 @@ input[type=text] {
     background-color: #fff;
 }
 
+input[type=text].mobile {
+    width: 200px;
+    font-size: 20px;
+    padding: 2px;
+    font-family: monospace;
+    background-color: #fff;
+}
+
 textarea {
   width: 500px;
   height: 400px;
@@ -231,6 +239,11 @@ textarea {
 
 input[type=submit] {
   font-size: 24px;
+  background-color: #fff;
+}
+
+input[type=submit].mobile {
+  font-size: 16px;
   background-color: #fff;
 }
 
