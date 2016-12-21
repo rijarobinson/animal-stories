@@ -24,14 +24,14 @@
 <!--mobile layout-->
 <div class = "post hidden-xl hidden-lg hidden-md hidden-sm">
     <div class = "row mobile background-black">
-        <div class = "col-md-8 post-title mobile background-black">
+        <div class = "col-md-12 post-title mobile background-black">
             <a name = "{{p.key().id()}}"></a>
             <a href = "/blog/{{p.key().id()}}">
                 {{p.subject}}
             </a>
-        </div>
-        <div class = "col-md-4 post-date mobile text-right background-black">
-            {{p.created.strftime("%b %d, %Y")}} by {{p.poster}}
+            <div class = "post-date mobile text-right background-black">
+                {{p.created.strftime("%b %d, %Y")}} by {{p.poster}}
+            </div>
         </div>
     </div>
     <div class = "row mobile">
