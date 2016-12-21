@@ -1,8 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 <form method="post">
-    <div class="row">
+    <div class="row hidden-xs">
         <div class="col-md-12">
+            <h2>Sign Up!</h2>
+        </div>
+    </div>
+    <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
+        <div class="col-md-12 mobile">
             <h2>Sign Up!</h2>
         </div>
     </div>
@@ -15,11 +20,13 @@
             <span style="color: red">{{ error_username }}</span>
         </div>
     </div>
-    <div="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
-        <div class="col-md-3">
+    <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
+        <div class="col-md-12 mobile">
             <label class="mobile">Username:</label>
         </div>
-        <div class="col-md-9">
+    </div>
+    <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
+        <div class="col-md-12 mobile">
             <input class="mobile" type="text" name="username" value={{ username }}>
             <span style="color: red">{{ error_username }}</span>
         </div>
@@ -34,15 +41,17 @@
         </div>
     </div>
     <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
-        <div class="col-md-3">
+        <div class="col-md-12 mobile">
             <label class="mobile text-right">Password:</label>
         </div>
-        <div class="col-md-9">
+    </div>
+    <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
+        <div class="col-md-12 mobile">
             <input class="mobile" type="password" name="password">
             <span style="color: red">{{ error_pass }}</span>
         </div>
     </div>
-    <div class="row">
+    <div class="row hidden-xs">
         <div class="col-md-3">
             <label class="text-right">Verify Password:</label>
         </div>
@@ -51,7 +60,7 @@
             <span style="color: red">{{ error_verify }}</span>
         </div>
     </div>
-    <div class="row">
+    <div class="row hidden-xs">
         <div class="col-md-3">
             <label class="text-right">Email (optional):</label>
         </div>
@@ -60,7 +69,29 @@
             <span style="color: red">{{ error_email }}</span>
         </div>
     </div>
-    <div class="row">
+    <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
+        <div class="col-md-12 mobile">
+            <label class="text-right mobile">Verify Password:</label>
+        </div>
+    </div>
+    <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
+        <div class="col-md-12 mobile">
+            <input class="mobile" type="password" name="verify">
+            <span style="color: red">{{ error_verify }}</span>
+        </div>
+    </div>
+    <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
+        <div class="col-md-12 mobile">
+            <label class="text-right mobile">Email (opt.):</label>
+        </div>
+    </div>
+    <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
+        <div class="col-md-12 mobile">
+            <input class="mobile" type="text" name="email" value={{ email }}>
+            <span style="color: red">{{ error_email }}</span>
+        </div>
+    </div>
+    <div class="row hidden-xs">
         <div class="col-md-12">
             <p>
                 <input type="button"
@@ -71,5 +102,17 @@
             </p>
         </div>
     </div>
+    <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
+        <div class="col-md-12 mobile">
+            <p>
+                <input class="mobile" type="button"
+                    name="signup"
+                    value="Submit My Info"
+                    alt="Submit My Info"
+                    OnClick="this.form.submit();">
+            </p>
+        </div>
+    </div>
+
 </form>
 {% endblock %}

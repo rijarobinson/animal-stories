@@ -125,6 +125,14 @@ input[type="button"] {
   min-width: 60px;
 }
 
+input[type="button"].mobile {
+  color: #3cf;
+  background-color: #000;
+  min-height: 46px;
+  min-width: 46px;
+  font-size: 14px;
+}
+
 .disabled {
   background-color: #fff;
   min-width: 46px;
@@ -209,10 +217,16 @@ label {
   font-size: 20px;
 }
 
+.col-md-3.mobile, col-md-4.mobile,
+col-md-8.mobile, col-md-9.mobile,
+col-md-12.mobile {
+  padding-right: 0px;
+}
+
 label.mobile {
   display: block;
   font-size: 16px;
-  padding: 0px;
+  text-align: right;
 }
 
 label + label {
@@ -228,11 +242,18 @@ input[type=text] {
 }
 
 input[type=text].mobile {
-    width: 200px;
+    width: 100%;
     font-size: 16px;
     padding: 2px;
     font-family: monospace;
     background-color: #fff;
+}
+
+input[type=password].mobile {
+    width: 100%;
+    font-size: 16px;
+    padding: 2px;
+    font-family: monospace;
 }
 
 textarea {
