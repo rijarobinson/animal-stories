@@ -215,18 +215,19 @@ label {
 label {
   display: block;
   font-size: 20px;
+  text-align: right;
 }
 
-.col-md-3.mobile, col-md-4.mobile,
-col-md-8.mobile, col-md-9.mobile,
-col-md-12.mobile {
-  padding-right: 0px;
+.col-md-3.mobile, .col-md-4.mobile,
+.col-md-8.mobile, .col-md-9.mobile,
+.col-md-12.mobile {
+  padding-left: 20px;
+  width: 100%;
 }
 
 label.mobile {
   display: block;
   font-size: 16px;
-  text-align: right;
 }
 
 label + label {
@@ -234,7 +235,7 @@ label + label {
 }
 
 input[type=text] {
-    width: 500px;
+    width: 100%;
     font-size: 20px;
     padding: 2px;
     font-family: monospace;
