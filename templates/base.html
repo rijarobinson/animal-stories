@@ -1,17 +1,17 @@
 <!doctype html>
-<html lang = "en">
+<html lang="en">
     <head>
-        <meta charset = "utf-8">
-        <meta http-equiv = "X-UA-Compatible" content = "IE=edge">
-        <meta name = "viewport" content = "width=device-width, initial-scale=1">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
-        <link rel = "stylesheet" href = "/css/styles.css"/>
-        <link rel = "stylesheet" href = "/css/bootstrap.min.css"/>
-        <link href = "https://fonts.googleapis.com/css?family=Lato:400,400italic,700,700italic,900,900italic"
-          rel = "stylesheet">
-        <link href = "https://fonts.googleapis.com/css?family=Baloo+Da"
-          rel = "stylesheet">
-        <link rel = "icon" href = "../images/as_icon_cat.png">
+        <link rel="stylesheet" href="/css/styles.css"/>
+        <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+        <link href="https://fonts.googleapis.com/css?family=Lato:400,400italic,700,700italic,900,900italic"
+          rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Baloo+Da"
+          rel="stylesheet">
+        <link rel="icon" href="../images/as_icon_cat.png">
         <!--this script tag is here for future ajax use, not sent to git repo-->
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" async></script>
 
@@ -20,16 +20,16 @@
             </title>
     </head>
     <body>
-        <div class = "wrapper">
+        <div class="wrapper">
                 <div class="row lg hidden-xs">
                 </div>
-            <div class = "container">
+            <div class="container">
 
 
                 <!--larger layouts-->
-                <div class = "row hidden-xs">
-                    <div class = "col-md-9">
-                        <a class = "header main-title" href = "/blog">
+                <div class="row hidden-xs">
+                    <div class="col-md-9">
+                        <a class="header main-title" href="/blog">
                             Animal Stories
                         </a>
                     </div>
@@ -38,44 +38,44 @@
         current_user throughout app-->
         <!--out-dented for readability-->
             {% if logged_in %}
-                <div class = "col-md-2 text-right">
+                <div class="col-md-2 text-right">
                     {{ logged_in }} is logged in.
                 </div>
-                <div class = "col-md-1 text-right">
-                    <form action = "/blog/logout">
-                        <input type = "button"
-                        class = "text-center"
-                        name = "logout"
-                        value = "Log Out"
-                        alt = "Log Out"
-                        title = "Log Out"
-                        OnClick = "this.form.submit();">
+                <div class="col-md-1 text-right">
+                    <form action="/blog/logout">
+                        <input type="button"
+                        class="text-center"
+                        name="logout"
+                        value="Log Out"
+                        alt="Log Out"
+                        title="Log Out"
+                        OnClick="this.form.submit();">
                     </form>
                 </div>
             {% else %}
                 {% if not sign_page and not welcome_page %}
-                    <div class = "col-md-1 text-right">
-                        <form action = "/blog/signup">
-                            <input type = "button"
-                                class = "text-center"
-                                name = "signup"
-                                value = "Sign Up"
-                                alt = "Sign Up to Post"
-                                title = "Sign Up to Post"
-                                OnClick = "this.form.submit();">
+                    <div class="col-md-1 text-right">
+                        <form action="/blog/signup">
+                            <input type="button"
+                                class="text-center"
+                                name="signup"
+                                value="Sign Up"
+                                alt="Sign Up to Post"
+                                title="Sign Up to Post"
+                                OnClick="this.form.submit();">
                         </form>
                     </div>
                 {% endif %}
                 {% if not log_page and not welcome_page %}
                     <div class="col-md-1 text-right">
-                        <form action = "/blog/login">
-                            <input type = "button"
-                                class = "text-center"
-                                name = "login"
-                                value = "Log In"
-                                alt = "Log In to Post"
-                                title = "Log In to Post"
-                                OnClick = "this.form.submit();">
+                        <form action="/blog/login">
+                            <input type="button"
+                                class="text-center"
+                                name="login"
+                                value="Log In"
+                                alt="Log In to Post"
+                                title="Log In to Post"
+                                OnClick="this.form.submit();">
                         </form>
                     </div>
                 {% endif %}
@@ -83,24 +83,24 @@
 
             {% if not front_page and not welcome_page and
                 not newpost_page and not permalink_page %}
-                <div class = "col-md-1 text-right">
-                    <form action = "/blog">
-                        <input type = "button"
-                            class = "text-center"
-                            name = "return_to_list"
-                            value = "View Posts"
-                            alt = "View Posts"
-                            title = "View Posts"
-                            OnClick = "this.form.submit();">
+                <div class="col-md-1 text-right">
+                    <form action="/blog">
+                        <input type="button"
+                            class="text-center"
+                            name="return_to_list"
+                            value="View Posts"
+                            alt="View Posts"
+                            title="View Posts"
+                            OnClick="this.form.submit();">
                     </form>
                 </div>
             {% endif %}
         </div>
 
                 <!--mobile layout-->
-                <div class = "row hidden-xl hidden-lg hidden-md hidden-sm">
-                    <div class = "col-md-12">
-                        <a class ="text-center header main-title mobile" href ="/blog">
+                <div class="row hidden-xl hidden-lg hidden-md hidden-sm">
+                    <div class="col-md-12">
+                        <a class="text-center header main-title mobile" href="/blog">
                             Animal Stories
                         </a>
                     </div>
@@ -112,40 +112,40 @@
                     {{ logged_in }} is logged in.
                 </div>
                 <div class="col-md-1">
-                    <form action = "/blog/logout">
-                        <input type = "button"
-                        class = "text-center"
-                        name = "logout"
-                        value = "Log Out"
-                        alt = "Log Out"
-                        title = "Log Out"
-                        OnClick = "this.form.submit();">
+                    <form action="/blog/logout">
+                        <input type="button"
+                        class="btn"
+                        name="logout"
+                        value="Log Out"
+                        alt="Log Out"
+                        title="Log Out"
+                        OnClick="this.form.submit();">
                     </form>
                 </div>
             {% else %}
                 {% if not sign_page and not welcome_page %}
                 <div class="col-md-1">
-                        <form action = "/blog/signup">
-                            <input type = "button"
-                                class = "text-center"
-                                name = "signup"
-                                value = "Sign Up"
-                                alt = "Sign Up to Post"
-                                title = "Sign Up to Post"
-                                OnClick = "this.form.submit();">
+                        <form action="/blog/signup">
+                            <input type="button"
+                                class="btn"
+                                name="signup"
+                                value="Sign Up"
+                                alt="Sign Up to Post"
+                                title="Sign Up to Post"
+                                OnClick="this.form.submit();">
                         </form>
                     </div>
                 {% endif %}
                 {% if not log_page and not welcome_page %}
                 <div class="col-md-1">
-                        <form action = "/blog/login">
-                            <input type = "button"
-                                class = "text-center"
-                                name = "login"
-                                value = "Log In"
-                                alt = "Log In to Post"
-                                title = "Log In to Post"
-                                OnClick = "this.form.submit();">
+                        <form action="/blog/login">
+                            <input type="button"
+                                class="btn"
+                                name="login"
+                                value="Log In"
+                                alt="Log In to Post"
+                                title="Log In to Post"
+                                OnClick="this.form.submit();">
                         </form>
                     </div>
                 {% endif %}
@@ -154,39 +154,39 @@
             {% if not front_page and not welcome_page and
                 not newpost_page and not permalink_page %}
                 <div class="col-md-1">
-                    <form action = "/blog">
-                        <input type = "button"
-                            class = "text-center"
-                            name = "return_to_list"
-                            value = "View Posts"
-                            alt = "View Posts"
-                            title = "View Posts"
-                            OnClick = "this.form.submit();">
+                    <form action="/blog">
+                        <input type="button"
+                            class="btn"
+                            name="return_to_list"
+                            value="View Posts"
+                            alt="View Posts"
+                            title="View Posts"
+                            OnClick="this.form.submit();">
                     </form>
                 </div>
             {% endif %}
         </div>
 
-        <div id = "content">
+        <div id="content">
             {% block content %}
             {% endblock %}
         </div>
         <!--larger screens-->
-        <div class = "row hidden-xs">
-            <div class = "col-md-12 text-right">
-                <a href = "http://www.github.com/rijarobinson" class="fontawesome-github" alt="Git Hub"></a>
-                <a href = "https://www.linkedin.com/in/marijarob" class="fontawesome-linkedin-sign" alt="LinkedIn"></a>
-                <a href = "mailto:marija@springmail.com" class="fontawesome-envelope" alt="Email"></a>
-                <a href = "http://www.plus.google.com" class="zocial-googleplus" alt="Google+"></a>
+        <div class="row hidden-xs">
+            <div class="col-md-12 text-right">
+                <a href="http://www.github.com/rijarobinson" class="fontawesome-github" alt="Git Hub"></a>
+                <a href="https://www.linkedin.com/in/marijarob" class="fontawesome-linkedin-sign" alt="LinkedIn"></a>
+                <a href="mailto:marija@springmail.com" class="fontawesome-envelope" alt="Email"></a>
+                <a href="http://www.plus.google.com" class="zocial-googleplus" alt="Google+"></a>
             </div>
         </div>
         <!--mobile screens-->
-        <div class = "row mobile hidden-xl hidden-lg hidden-md hidden-sm">
-            <div class = "col-md-12 text-right">
-                <a href = "http://www.github.com/rijarobinson" class="fontawesome-github" alt="Git Hub"></a>
-                <a href = "https://www.linkedin.com/in/marijarob" class="fontawesome-linkedin-sign" alt="LinkedIn"></a>
-                <a href = "mailto:marija@springmail.com" class="fontawesome-envelope" alt="Email"></a>
-                <a href = "http://www.plus.google.com" class="zocial-googleplus" alt="Google+"></a>
+        <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
+            <div class="col-md-12 text-right">
+                <a href="http://www.github.com/rijarobinson" class="fontawesome-github" alt="Git Hub"></a>
+                <a href="https://www.linkedin.com/in/marijarob" class="fontawesome-linkedin-sign" alt="LinkedIn"></a>
+                <a href="mailto:marija@springmail.com" class="fontawesome-envelope" alt="Email"></a>
+                <a href="http://www.plus.google.com" class="zocial-googleplus" alt="Google+"></a>
             </div>
         </div>
 
