@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-<div class = "row">
-    <div class = "md-col-12">
+<div class="row hidden-xs">
+    <div class="md-col-12">
         <p>
             Welcome to our Animal Stories forum! Please share your (clean)
             stories about animal companions: funny, sweet, sad, even gross!
@@ -10,145 +10,299 @@
     </div>
 </div>
 {% if logged_in %}
-    <div class = "row">
-          <div class = "col-md-2">
-            <form action = "/blog/newpost">
-                <input type = "hidden" name = "poster"
-                    value = "{{ current_user }}">
-                <input type = "hidden" name = "logged_in"
-                    value = "{{ logged_in }}">
-                <input type = "button" name="create_new_post"
-                    value = "Create a New Post" OnClick="this.form.submit();">
+    <!--larger screen format-->
+    <div class="row hidden-xs">
+          <div class="col-md-2">
+            <form action="/blog/newpost">
+                <input type="hidden" name="poster"
+                    value="{{ current_user }}">
+                <input type="hidden" name="logged_in"
+                    value="{{ logged_in }}">
+                <input type="button" name="create_new_post"
+                    value="Create a New Post" OnClick="this.form.submit();">
             </form>
         </div>
     </div>
+    <!--mobile format-->
+    <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
+          <div class="col-md-2">
+            <form action="/blog/newpost">
+                <input type="hidden" name="poster"
+                    value="{{ current_user }}">
+                <input type="hidden" name="logged_in"
+                    value="{{ logged_in }}">
+                <input class="btn" type="button" name="create_new_post"
+                    value="Create a New Post" OnClick="this.form.submit();">
+            </form>
+        </div>
+    </div>
+
 {% endif %}
 
 {% for p in posts %}
     {{ p.render() | safe }}
     {% if current_user == p.poster %}
-        <div class = "row">
-            <div class = "col-md-1">
-                <form action = "/blog/editpost" method = "post">
-                    <input type = "hidden" name = "post_key"
-                        value = "{{p.key().id()}}">
-                    <input type = "hidden" name = "subject"
-                        value = "{{p.subject}}">
-                    <input type = "hidden" name = "content"
-                        value = "{{p.content}}">
+<!--larger screen format-->
+        <div class="row hidden-xs">
+            <div class="col-md-1">
+                <form action="/blog/editpost" method="post">
+                    <input type="hidden" name="post_key"
+                        value="{{p.key().id()}}">
+                    <input type="hidden" name="subject"
+                        value="{{p.subject}}">
+                    <input type="hidden" name="content"
+                        value="{{p.content}}">
                     <input type="hidden" name="poster"
                         value="{{p.poster}}">
                     <input type="button" value="Edit Post" name="edit_post"
-                        onClick = "this.form.submit();">
+                        onClick="this.form.submit();">
                 </form>
             </div>
-            <div class = "col-md-1">
-                <form action = "/blog/deletepost" method="post">
-                    <input type = "hidden" name = "post_key"
-                        value = "{{p.key().id()}}">
+            <div class="col-md-1">
+                <form action="/blog/deletepost" method="post">
+                    <input type="hidden" name="post_key"
+                        value="{{p.key().id()}}">
                     <input type="button" value="Delete Post" name="delete_post"
-                        onClick = "this.form.submit();">
+                        onClick="this.form.submit();">
                 </form>
             </div>
         </div>
+<!--mobile format-->
+        <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
+            <div class="col-md-1">
+                <form action="/blog/editpost" method="post">
+                    <input type="hidden" name="post_key"
+                        value="{{p.key().id()}}">
+                    <input type="hidden" name="subject"
+                        value="{{p.subject}}">
+                    <input type="hidden" name="content"
+                        value="{{p.content}}">
+                    <input type="hidden" name="poster"
+                        value="{{p.poster}}">
+                    <input class="btn" type="button" value="Edit Post" name="edit_post"
+                        onClick="this.form.submit();">
+                </form>
+            </div>
+            <div class="col-md-1">
+                <form action="/blog/deletepost" method="post">
+                    <input type="hidden" name="post_key"
+                        value="{{p.key().id()}}">
+                    <input class="btn" type="button" value="Delete Post" name="delete_post"
+                        onClick="this.form.submit();">
+                </form>
+            </div>
+        </div>
+
     {% endif %}
-    <div class = "row" style = "padding-left: 16px;">
-        <div class = "md-col-2">
+    <!--larger screen format-->
+    <div class="row hidden-xs" style="padding-left: 16px;">
+        <div class="md-col-2">
         {% if not logged_in %}
-            <a href = "/blog/login">
-                <input type = "button" alt = "Log In to Comment"
-                    name = "login_to_comment" value = "Log In to Comment"
-                    title = "Log In to Comment">
+            <a href="/blog/login">
+                <input type="button" alt="Log In to Comment"
+                    name="login_to_comment" value="Log In to Comment"
+                    title="Log In to Comment">
             </a>
         {% else %}
-            <a href = "/blog/{{p.key().id()}}?comment=True">
-                <input type = "button" alt = "Comment on post"
-                    name = "comment_on_post" value = "Comment"
-                    title = "Click to Comment on post"
-                    onClick = "this.form.submit();">
+            <a href="/blog/{{p.key().id()}}?comment=True">
+                <input type="button" alt="Comment on post"
+                    name="comment_on_post" value="Comment"
+                    title="Click to Comment on post"
+                    onClick="this.form.submit();">
             </a>
         {% endif %}
         </div>
-        <div class = "col-md-2">
-            <a href = "/blog/{{p.key().id()}}">
-                <input type = "button" alt = "View Comments"
-                    name = "view_comments" value = "View Comments"
-                    title = "Click to View Comments">
+        <div class="col-md-2">
+            <a href="/blog/{{p.key().id()}}">
+                <input type="button" alt="View Comments"
+                    name="view_comments" value="View Comments"
+                    title="Click to View Comments">
             </a>
         </div>
     </div>
+    <!--mobile format-->
+    <div class="row mobile hidden-xl hidden-md hidden-lg hidden-sm" style="padding-left: 10px;">
+        <div class="md-col-2">
+        {% if not logged_in %}
+            <a href="/blog/login">
+                <input class="btn" type="button" alt="Log In to Comment"
+                    name="login_to_comment" value="Log In to Comment"
+                    title="Log In to Comment">
+            </a>
+        {% else %}
+            <a href="/blog/{{p.key().id()}}?comment=True">
+                <input class="btn" type="button" alt="Comment on post"
+                    name="comment_on_post" value="Comment"
+                    title="Click to Comment on post"
+                    onClick="this.form.submit();">
+            </a>
+        {% endif %}
+        </div>
+        <div class="col-md-2">
+            <a href="/blog/{{p.key().id()}}">
+                <input class="btn" type="button" alt="View Comments"
+                    name="view_comments" value="View Comments"
+                    title="Click to View Comments">
+            </a>
+        </div>
+    </div>
+
+
         <!--TODO: use AJAX to upgrade to show the wags incremented
         and other updates to db where I don't want to refresh entire page-->
     {% if not logged_in %}
-        <div class = "row">
-            <div class = "col-md-12 text-right">
+        <!--larger screens-->
+        <div class="row hidden-xs">
+            <div class="col-md-12 text-right">
                 Log in to Wag at this post
             </div>
         </div>
-        <div class = "row">
-            <div class = "col-md-12 text-right">
-                <img src = "../images/wag_button_disabled.png"
-                    alt = "Sign up or log in to Wag at posts!"
-                    name = "disabled_wag"
-                    title = "Sign up or log in to Wag at posts!">
+        <div class="row hidden-xs">
+            <div class="col-md-12 text-right">
+                <img src="../images/wag_button_disabled.png"
+                    alt="Sign up or log in to Wag at posts!"
+                    name="disabled_wag"
+                    title="Sign up or log in to Wag at posts!">
             </div>
         </div>
+        <!--mobile format-->
+        <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
+            <div class="col-md-12 text-right">
+                Log in to Wag at this post
+            </div>
+        </div>
+        <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
+            <div class="col-md-12 text-right">
+                <img src="../images/wag_button_disabled.png"
+                    alt="Sign up or log in to Wag at posts!"
+                    name="disabled_wag"
+                    title="Sign up or log in to Wag at posts!">
+            </div>
+        </div>
+
     {% elif current_user == p.poster %}
-        <div class = "row">
-            <div class = "col-md-12 text-right">
-                <img src = "../images/wag_button_disabled.png"
+        <!--larger screens-->
+        <div class="row hidden-xs">
+            <div class="col-md-12 text-right">
+                <img src="../images/wag_button_disabled.png"
                 alt="You can't wag at your own posts, sorry!"
-                name = "disabled_wag"
-                title = "Sorry, you can't Wag at your own posts!">
+                name="disabled_wag"
+                title="Sorry, you can't Wag at your own posts!">
             </div>
         </div>
+        <!--mobile screens-->
+        <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
+            <div class="col-md-12 text-right">
+                <img src="../images/wag_button_disabled.png"
+                alt="You can't wag at your own posts, sorry!"
+                name="disabled_wag"
+                title="Sorry, you can't Wag at your own posts!">
+            </div>
+        </div>
+
     {% else %}
         {% if p.key().id()|string() in myList %}
-            <div class="row">
+            <!--larger screens-->
+            <div class="row hidden-xs">
                 <div class="col-md-12 text-right">
                     You've Wagged at this post
                 </div>
             </div>
-            <div class = "row">
-                <div class = "col-md-12 text-right">
-                    <form method = "post" action = "/blog/removewag">
-                        <input type = "hidden" name = "post_key"
-                            value = "{{p.key().id()}}">
+            <div class="row hidden-xs">
+                <div class="col-md-12 text-right">
+                    <form method="post" action="/blog/removewag">
+                        <input type="hidden" name="post_key"
+                            value="{{p.key().id()}}">
                         <div class="text-right">
                             <input type="image"
                                 src="../images/wag_button_wagged.png"
-                                alt="Click to remove Wag" name = "unwag_post"
-                                value = "remove_wag"
-                                title = "Click to remove Wag"
-                                onClick = "this.form.submit();">
+                                alt="Click to remove Wag" name="unwag_post"
+                                value="remove_wag"
+                                title="Click to remove Wag"
+                                onClick="this.form.submit();">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!--mobile screens-->
+            <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
+                <div class="col-md-12 text-right">
+                    You've Wagged at this post
+                </div>
+            </div>
+            <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
+                <div class="col-md-12 text-right">
+                    <form method="post" action="/blog/removewag">
+                        <input type="hidden" name="post_key"
+                            value="{{p.key().id()}}">
+                        <div class="text-right">
+                            <input type="image"
+                                src="../images/wag_button_wagged.png"
+                                alt="Click to remove Wag" name="unwag_post"
+                                value="remove_wag"
+                                title="Click to remove Wag"
+                                onClick="this.form.submit();">
                         </div>
                     </form>
                 </div>
             </div>
         {% else %}
-            <div class="row">
+            <!--larger screens-->
+            <div class="row hidden-xs">
                 <div class="col-md-12 text-right">
                     Click to Wag at this post.
                 </div>
             </div>
-            <div class="row">
+            <div class="row hidden-xs">
                 <div class="col-md-12 text-right">
-                    <form method = "post" action = "/blog/addwag">
-                        <input type = "hidden" name = "post_key"
-                            value = "{{p.key().id()}}">
+                    <form method="post" action="/blog/addwag">
+                        <input type="hidden" name="post_key"
+                            value="{{p.key().id()}}">
                         <div class="text-right">
                             <input type="image" src="../images/wag_button.png"
-                            alt="Click to Wag at this post" name = "wag_at_post"
-                            value = "add_wag"
-                            title = "Click to Wag at this post"
-                            onClick = "this.form.submit();">
+                            alt="Click to Wag at this post" name="wag_at_post"
+                            value="add_wag"
+                            title="Click to Wag at this post"
+                            onClick="this.form.submit();">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!--mobile screens-->
+            <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
+                <div class="col-md-12 text-right">
+                    Click to Wag at this post.
+                </div>
+            </div>
+            <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
+                <div class="col-md-12 text-right">
+                    <form method="post" action="/blog/addwag">
+                        <input type="hidden" name="post_key"
+                            value="{{p.key().id()}}">
+                        <div class="text-right">
+                            <input type="image" src="../images/wag_button.png"
+                            alt="Click to Wag at this post" name="wag_at_post"
+                            value="add_wag"
+                            title="Click to Wag at this post"
+                            onClick="this.form.submit();">
                         </div>
                     </form>
                 </div>
             </div>
         {% endif %}
     {% endif %}
-    <div class="row">
+    <!--larger screens-->
+    <div class="row hidden-xs">
+        <div class="col-md-12 text-right">
+            {% if p.wags == 1 %}
+                {{ p.wags }} Wag
+            {% else %}
+                {{ p.wags }} Wags<br><br>
+            {% endif %}
+        </div>
+    </div>
+    <!--mobile screens-->
+    <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
         <div class="col-md-12 text-right">
             {% if p.wags == 1 %}
                 {{ p.wags }} Wag

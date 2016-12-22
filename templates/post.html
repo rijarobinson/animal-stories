@@ -1,4 +1,5 @@
-<div class = "post">
+<!--larger screen layout-->
+<div class = "post hidden-xs">
     <div class = "row">
         <div class = "col-md-8 post-title background-black">
             <a name = "{{p.key().id()}}"></a>
@@ -15,6 +16,27 @@
             <div class = "post-content">
                 {{p._render_text | safe}}
             </div>
+        </div>
+    </div>
+</div>
+
+
+<!--mobile layout-->
+<div class = "post hidden-xl hidden-lg hidden-md hidden-sm">
+    <div class = "row mobile background-black">
+        <div class = "col-md-12 post-title mobile background-black">
+            <a name = "{{p.key().id()}}"></a>
+            <a href = "/blog/{{p.key().id()}}">
+                {{p.subject}}
+            </a>
+            <div class = "post-date mobile text-right background-black">
+                {{p.created.strftime("%b %d, %Y")}} by {{p.poster}}
+            </div>
+        </div>
+    </div>
+    <div class = "row mobile">
+        <div class = "col-md-12 post-content mobile text-center">
+                {{p._render_text | safe}}
         </div>
     </div>
 </div>

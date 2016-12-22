@@ -29,10 +29,14 @@
 }
 
 body, html {
-    background-color: #99a;
+    background-color: #99A;
     height:  100%;
     margin:  0px auto;
     padding: 0px auto;
+}
+
+.no-background {
+  background-color: #99A;
 }
 
 /*row styling*/
@@ -45,12 +49,26 @@ body, html {
   max-width: 100%;
 }
 
+.row.lg {
+  min-height: 70px;
+  background-color: #000;
+}
+
+.row.mobile {
+  margin-top: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+  max-width: 100%;
+}
+
 /*text/paragraph styling*/
 
 h1 {
   font-family: "Baloo Da", sans-serif;
   font-size: 48px;
   margin-bottom: 0;
+  background-color: #99A;
 }
 
 h2 {
@@ -112,6 +130,14 @@ input[type="button"] {
   min-width: 60px;
 }
 
+input[type="button"].mobile {
+  color: #3cf;
+  background-color: #000;
+  min-height: 46px;
+  min-width: 46px;
+  font-size: 14px;
+}
+
 .disabled {
   background-color: #fff;
   min-width: 46px;
@@ -141,6 +167,24 @@ a.header:hover {
   background-color: #3cf;
 }
 
+a.header.mobile:link {
+  color: #000;
+  text-decoration: none;
+  text-align: center;
+}
+
+a.header.mobile:visited {
+  background-color: #99a;
+  color: #000;
+  text-align: center;
+}
+
+a.header.mobile:hover {
+  color: #000;
+  background-color: #3cf;
+  text-align: center;
+}
+
 a:visited {
   color: #3cf;
 }
@@ -161,7 +205,6 @@ hr {
   min-height: 100%;
   margin: 0px auto;
   padding: 0px auto;
-  padding-top: 70px;
   background-color: #000;
  }
 
@@ -176,6 +219,19 @@ label {
 label {
   display: block;
   font-size: 20px;
+  text-align: right;
+}
+
+.col-md-3.mobile, .col-md-4.mobile,
+.col-md-8.mobile, .col-md-9.mobile,
+.col-md-12.mobile {
+  padding-left: 20px;
+  width: 100%;
+}
+
+label.mobile {
+  display: block;
+  font-size: 16px;
 }
 
 label + label {
@@ -183,11 +239,26 @@ label + label {
 }
 
 input[type=text] {
-    width: 500px;
+    width: 100%;
     font-size: 20px;
     padding: 2px;
     font-family: monospace;
     background-color: #fff;
+}
+
+input[type=text].mobile {
+    width: 100%;
+    font-size: 16px;
+    padding: 2px;
+    font-family: monospace;
+    background-color: #fff;
+}
+
+input[type=password].mobile {
+    width: 100%;
+    font-size: 16px;
+    padding: 2px;
+    font-family: monospace;
 }
 
 textarea {
@@ -203,6 +274,11 @@ input[type=submit] {
   background-color: #fff;
 }
 
+input[type=submit].mobile {
+  font-size: 16px;
+  background-color: #fff;
+}
+
 .main-title {
     display: block;
     font-size: 40px;
@@ -212,12 +288,25 @@ input[type=submit] {
     text-decoration: none;
 }
 
+.main-title.mobile {
+    display: block;
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 0px;
+    text-decoration: none;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+
 .background-black {
   background-color: #000;
 }
 
 .post + .post {
     margin-top: 15px;
+    width: 100%;
 }
 
 .post-body {
@@ -230,11 +319,22 @@ input[type=submit] {
     border-bottom: 3px solid #666;
 }
 
+.post-heading.mobile {
+    border-bottom: 3px solid #666;
+}
+
 .post-title {
     font-size: 24px;
     font-weight: bold;
     padding: 5px;
 }
+
+.post-title.mobile {
+    font-size: 16px;
+    font-weight: bold;
+    padding: 5px;
+}
+
 
 .post-date {
     position: absolute;
@@ -247,6 +347,21 @@ input[type=submit] {
     padding: 5px;
 }
 
+.post-date.mobile {
+    text-align: right;
+    right: 0px;
+    bottom: 0px;
+    color: #3cf;
+    font-style: italic;
+    font-size: 16px;
+    padding: 5px;
+}
+
+.mobile-text {
+  padding: 0px;
+  margin: 0px;
+}
+
 .remove-padding {
   padding: 0px;
 }
@@ -257,6 +372,15 @@ input[type=submit] {
     margin-right: 5px;
     word-wrap: break-word;
 }
+
+.post-content.mobile {
+    text-align: left;
+    margin-top: 5px;
+    font-size: 16px;
+    margin-right: 5px;
+    word-wrap: break-word;
+}
+
 
 .comment-box {
     width: 500px;
