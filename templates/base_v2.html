@@ -36,11 +36,29 @@
                         title="Log Out"
                         OnClick="this.form.submit();">
                     </form>' %}
+    {% set displayLogoutMobile = '<form action="/blog/logout" class="form-inline">
+                <input type="button"
+                class="btn mobile text-center"
+                name="logout"
+                value="Log Out"
+                alt="Log Out"
+                title="Log Out"
+                OnClick="this.form.submit();">
+            </form>' %}
     {% else %}
         {% if not sign_page and not welcome_page %}
             {% set signUpButton = '<form action="/blog/signup" class="form-inline">
-                                  <input type="btn button"
-                                        class="text-center"
+                                  <input type="button"
+                                        class="btn text-center"
+                                        name="signup"
+                                        value="Sign Up"
+                                        alt="Sign Up to Post"
+                                        title="Sign Up to Post"
+                                        OnClick="this.form.submit();">
+                                  </form>' %}
+            {% set signUpButtonMobile = '<form action="/blog/signup" class="form-inline">
+                                  <input type="button"
+                                        class="btn mobile text-center"
                                         name="signup"
                                         value="Sign Up"
                                         alt="Sign Up to Post"
@@ -50,8 +68,17 @@
                 {% endif %}
                 {% if not log_page and not welcome_page %}
                     {% set logInButton = '<form action="/blog/login" class="form-inline">
-                            <input type="btn button"
-                                class="text-center"
+                            <input type="button"
+                                class="btn text-center"
+                                name="login"
+                                value="Log In"
+                                alt="Log In to Post"
+                                title="Log In to Post"
+                                OnClick="this.form.submit();">
+                        </form>' %}
+                    {% set logInButtonMobile = '<form action="/blog/login" class="form-inline">
+                            <input type="button"
+                                class="btn mobile text-center"
                                 name="login"
                                 value="Log In"
                                 alt="Log In to Post"
@@ -59,7 +86,30 @@
                                 OnClick="this.form.submit();">
                         </form>' %}
                 {% endif %}
-    {% endif %}
+            {% endif %}
+
+            {% if not front_page and not welcome_page and
+            not newpost_page and not permalink_page %}
+                {% set viewPostButton = '<form action="/blog" class="form-inline">
+                        <input type="button"
+                            class="btn text-center"
+                            name="return_to_list"
+                            value="View Posts"
+                            alt="View Posts"
+                            title="View Posts"
+                            OnClick="this.form.submit();">
+                    </form>' %}
+                {% set viewPostButtonMobile = '<form action="/blog" class="form-inline">
+                        <input type="button"
+                            class="btn mobile text-center"
+                            name="return_to_list"
+                            value="View Posts"
+                            alt="View Posts"
+                            title="View Posts"
+                            OnClick="this.form.submit();">
+                    </form>' %}
+            {% endif %}
+
 
         <div class="wrapper">
             <div class="row lg hidden-xs">
@@ -73,41 +123,22 @@
                         </a>
                     </div>
                     <div class="col-md-3 text-right">
-                        {{ displayLogin }} {{ displayLogout|safe }} {{ signUpButton|safe }} {{ logInButton|safe }}
+                        {{ displayLogin }} {{ displayLogout|safe }} {{ signUpButton|safe }} {{ logInButton|safe }} {{ viewPostButton|safe }}
                     </div>
                 </div>
 
-                <div class="row hidden-xl hidden-lg hidden-md hidden-sm">
-                    <div class="col-xs-8">
+                <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
+                    <div class="col-xs-7 mobile">
                         <a class="header main-title mobile" href="/blog">
                             Animal Stories
                         </a>
                     </div>
-                    <div class="col-xs-4 text-right">
+                    <div class="col-xs-5 mobile text-right">
                         {{ displayLogin }}
                         <br>
-                        {{ displayLogout|safe }} {{ signUpButton|safe }} {{ logInButton|safe }}
+                        {{ displayLogoutMobile|safe }} {{ signUpButtonMobile|safe }} {{ logInButtonMobile|safe }} {{ viewPostButtonMobile|safe }}
                     </div>
                 </div>
-
-
-
-<div class="row">
-            {% if not front_page and not welcome_page and
-                not newpost_page and not permalink_page %}
-                <div class="col-md-1 text-right">
-                    <form action="/blog">
-                        <input type="button"
-                            class="text-center"
-                            name="return_to_list"
-                            value="View Posts"
-                            alt="View Posts"
-                            title="View Posts"
-                            OnClick="this.form.submit();">
-                    </form>
-                </div>
-            {% endif %}
-        </div>
 
         <div id="content">
             {% block content %}

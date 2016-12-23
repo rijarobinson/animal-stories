@@ -174,19 +174,19 @@ a.header:hover {
 a.header.mobile:link {
   color: #000;
   text-decoration: none;
-  text-align: center;
+  text-align: left;
 }
 
 a.header.mobile:visited {
   background-color: #99a;
   color: #000;
-  text-align: center;
+  text-align: left;
 }
 
 a.header.mobile:hover {
   color: #000;
   background-color: #3cf;
-  text-align: center;
+  text-align: left;
 }
 
 a:visited {
@@ -296,16 +296,33 @@ input[type=submit].mobile {
     text-decoration: none;
 }
 
+.btn.mobile {
+  max-height: 46px;
+  font-size: 12px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 2px;
+  padding-right: 2px;
+  margin: 0px;
+}
+
 .main-title.mobile {
     display: block;
     font-size: 30px;
     font-weight: bold;
-    text-align: center;
+    text-align: left;
     margin-bottom: 0px;
     text-decoration: none;
     padding-top: 10px;
     padding-bottom: 10px;
 }
+
+.col-xs-6.mobile, .col-xs-7.mobile,
+.col-xs-5.mobile {
+  padding: 0px;
+  padding-left: 10px;
+  margin: 0px;
+  }
 
 
 .background-black {
