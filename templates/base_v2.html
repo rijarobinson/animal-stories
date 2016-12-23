@@ -22,12 +22,49 @@
             </title>
     </head>
     <body>
+
+        <!--TODO: fix inconsistencies in username vs.
+        current_user throughout app-->
+{% if logged_in %}
+    {% set displayLogin = logged_in + ' is logged in' %}
+    {% set displayLogout = '<form action="/blog/logout" class="form-inline">
+                        <input type="button"
+                        class="btn text-center"
+                        name="logout"
+                        value="Log Out"
+                        alt="Log Out"
+                        title="Log Out"
+                        OnClick="this.form.submit();">
+                    </form>' %}
+    {% else %}
+        {% if not sign_page and not welcome_page %}
+            {% set signUpButton = '<form action="/blog/signup" class="form-inline">
+                                  <input type="btn button"
+                                        class="text-center"
+                                        name="signup"
+                                        value="Sign Up"
+                                        alt="Sign Up to Post"
+                                        title="Sign Up to Post"
+                                        OnClick="this.form.submit();">
+                                  </form>' %}
+                {% endif %}
+                {% if not log_page and not welcome_page %}
+                    {% set logInButton = '<form action="/blog/login" class="form-inline">
+                            <input type="btn button"
+                                class="text-center"
+                                name="login"
+                                value="Log In"
+                                alt="Log In to Post"
+                                title="Log In to Post"
+                                OnClick="this.form.submit();">
+                        </form>' %}
+                {% endif %}
+    {% endif %}
+
         <div class="wrapper">
-                <div class="row lg hidden-xs">
-                </div>
+            <div class="row lg hidden-xs">
+            </div>
             <div class="container">
-
-
                 <!--larger layouts-->
                 <div class="row hidden-xs">
                     <div class="col-md-9">
@@ -35,54 +72,27 @@
                             Animal Stories
                         </a>
                     </div>
-
-        <!--TODO: fix inconsistencies in username vs.
-        current_user throughout app-->
-        <!--out-dented for readability-->
-            {% if logged_in %}
-                <div class="col-md-2 text-right">
-                    {{ logged_in }} is logged in.
-                </div>
-                <div class="col-md-1 text-right">
-                    <form action="/blog/logout">
-                        <input type="button"
-                        class="text-center"
-                        name="logout"
-                        value="Log Out"
-                        alt="Log Out"
-                        title="Log Out"
-                        OnClick="this.form.submit();">
-                    </form>
-                </div>
-            {% else %}
-                {% if not sign_page and not welcome_page %}
-                    <div class="col-md-1 text-right">
-                        <form action="/blog/signup">
-                            <input type="button"
-                                class="text-center"
-                                name="signup"
-                                value="Sign Up"
-                                alt="Sign Up to Post"
-                                title="Sign Up to Post"
-                                OnClick="this.form.submit();">
-                        </form>
+                    <div class="col-md-3 text-right">
+                        {{ displayLogin }} {{ displayLogout|safe }} {{ signUpButton|safe }} {{ logInButton|safe }}
                     </div>
-                {% endif %}
-                {% if not log_page and not welcome_page %}
-                    <div class="col-md-1 text-right">
-                        <form action="/blog/login">
-                            <input type="button"
-                                class="text-center"
-                                name="login"
-                                value="Log In"
-                                alt="Log In to Post"
-                                title="Log In to Post"
-                                OnClick="this.form.submit();">
-                        </form>
-                    </div>
-                {% endif %}
-            {% endif %}
+                </div>
 
+                <div class="row hidden-xl hidden-lg hidden-md hidden-sm">
+                    <div class="col-xs-8">
+                        <a class="header main-title mobile" href="/blog">
+                            Animal Stories
+                        </a>
+                    </div>
+                    <div class="col-xs-4 text-right">
+                        {{ displayLogin }}
+                        <br>
+                        {{ displayLogout|safe }} {{ signUpButton|safe }} {{ logInButton|safe }}
+                    </div>
+                </div>
+
+
+
+<div class="row">
             {% if not front_page and not welcome_page and
                 not newpost_page and not permalink_page %}
                 <div class="col-md-1 text-right">
@@ -99,99 +109,20 @@
             {% endif %}
         </div>
 
-                <!--mobile layout-->
-                <div class="row hidden-xl hidden-lg hidden-md hidden-sm">
-                    <div class="col-md-6">
-                        <a class="header main-title mobile" href="/blog">
-                            Animal Stories
-                        </a>
-                    </div>
-        <!--out-dented for readability-->
-            {% if logged_in %}
-                <div class="col-md-6 mobile text-right">
-                    <div class="row mobile text-right">
-                    {{ logged_in }} is logged in.
-                    </div>
-                    <div class="row mobile text-right">
-                        <form action="/blog/logout">
-                            <input type="button"
-                            class="btn mobile"
-                            name="logout"
-                            value="Log Out"
-                            alt="Log Out"
-                            title="Log Out"
-                            OnClick="this.form.submit();">
-                        </form>
-                </div>
-            {% else %}
-                {% if not sign_page and not welcome_page %}
-                <div class="row mobile">
-                        <form action="/blog/signup">
-                            <input type="button"
-                                class="btn"
-                                name="signup"
-                                value="Sign Up"
-                                alt="Sign Up to Post"
-                                title="Sign Up to Post"
-                                OnClick="this.form.submit();">
-                        </form>
-                    </div>
-                {% endif %}
-                {% if not log_page and not welcome_page %}
-                <div class="row mobile">
-                        <form action="/blog/login">
-                            <input type="button"
-                                class="btn"
-                                name="login"
-                                value="Log In"
-                                alt="Log In to Post"
-                                title="Log In to Post"
-                                OnClick="this.form.submit();">
-                        </form>
-                    </div>
-                {% endif %}
-            {% endif %}
-
-            {% if not front_page and not welcome_page and
-                not newpost_page and not permalink_page %}
-                <div class="row mobile">
-                    <form action="/blog">
-                        <input type="button"
-                            class="btn"
-                            name="return_to_list"
-                            value="View Posts"
-                            alt="View Posts"
-                            title="View Posts"
-                            OnClick="this.form.submit();">
-                    </form>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-
         <div id="content">
             {% block content %}
             {% endblock %}
         </div>
-        <!--larger screens-->
-        <div class="row hidden-xs">
-            <div class="col-md-12 text-right">
-                <a href="http://www.github.com/rijarobinson" class="fontawesome-github" alt="Git Hub"></a>
-                <a href="https://www.linkedin.com/in/marijarob" class="fontawesome-linkedin-sign" alt="LinkedIn"></a>
-                <a href="mailto:marija@springmail.com" class="fontawesome-envelope" alt="Email"></a>
-                <a href="http://www.plus.google.com" class="zocial-googleplus" alt="Google+"></a>
-            </div>
-        </div>
-        <!--mobile screens-->
-        <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
-            <div class="col-md-12 text-right">
-                <a href="http://www.github.com/rijarobinson" class="fontawesome-github" alt="Git Hub"></a>
-                <a href="https://www.linkedin.com/in/marijarob" class="fontawesome-linkedin-sign" alt="LinkedIn"></a>
-                <a href="mailto:marija@springmail.com" class="fontawesome-envelope" alt="Email"></a>
-                <a href="http://www.plus.google.com" class="zocial-googleplus" alt="Google+"></a>
-            </div>
-        </div>
 
+        <!--larger screens-->
+        <div class="row">
+            <div class="col-md-12 text-right">
+                <a href="http://www.github.com/rijarobinson" class="fontawesome-github" alt="Git Hub"></a>
+                <a href="https://www.linkedin.com/in/marijarob" class="fontawesome-linkedin-sign" alt="LinkedIn"></a>
+                <a href="mailto:marija@springmail.com" class="fontawesome-envelope" alt="Email"></a>
+                <a href="http://www.plus.google.com" class="zocial-googleplus" alt="Google+"></a>
+            </div>
+        </div>
     </div>
     </div>
     </body>
