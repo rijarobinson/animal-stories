@@ -9,7 +9,7 @@
   width: 5vw;
   font-size: 40px;
   text-align: right;
-  background-color: #99a;
+  background-color: #FFF;
 }
 
 [class*="fontawesome-"]:before {
@@ -18,25 +18,25 @@
   width: 5vw;
   font-size: 40px;
   text-align: right;
-  background-color: #99a;
+  background-color: #FFF;
 }
 
 * {
   font-family: "Lato", sans-serif;
   align-self: left;
   text-align: left;
-  background-color: #99a;
+  background-color: #FFF;
 }
 
 body, html {
-    background-color: #99A;
+    background-color: #FFF;
     height:  100%;
     margin:  0px auto;
     padding: 0px auto;
 }
 
 .no-background {
-  background-color: #99A;
+  background-color: #FFF;
 }
 
 /*row styling*/
@@ -51,7 +51,7 @@ body, html {
 
 .row.lg {
   min-height: 70px;
-  background-color: #000;
+  background-color: #99A;
 }
 
 .row.mobile {
@@ -69,7 +69,7 @@ h1 {
   font-family: "Baloo Da", sans-serif;
   font-size: 48px;
   margin-bottom: 0;
-  background-color: #99A;
+  background-color: #FFF;
 }
 
 h2 {
@@ -125,8 +125,8 @@ object, video {
 }
 
 input[type="button"] {
-  color: #3cf;
-  background-color: #000;
+  color: #000;
+  background-color: #99A;
   min-height: 46px;
   min-width: 60px;
 }
@@ -136,8 +136,8 @@ input[type="button"] {
 }
 
 input[type="button"].mobile {
-  color: #3cf;
-  background-color: #000;
+  color: #000;
+  background-color: #99A;
   max-height: 46px;
   min-width: 46px;
   font-size: 14px;
@@ -152,9 +152,9 @@ input[type="button"].mobile {
 /*link styling*/
 
 a:link {
-  color: #3cf;
+  color: #000;
   text-decoration: none;
-  background-color: #000;
+  background-color: #99A;
 }
 
 a.header:link {
@@ -163,7 +163,7 @@ a.header:link {
 }
 
 a.header:visited {
-  background-color: #99a;
+  background-color: #FFF;
   color: #000;
 }
 
@@ -179,19 +179,19 @@ a.header.mobile:link {
 }
 
 a.header.mobile:visited {
-  background-color: #99a;
+  background-color: #FFF;
   color: #000;
   text-align: left;
 }
 
 a.header.mobile:hover {
   color: #000;
-  background-color: #3cf;
+  background-color: #000;
   text-align: left;
 }
 
 a:visited {
-  color: #3cf;
+  color: #000;
 }
 
 a:hover {
@@ -210,7 +210,7 @@ hr {
   min-height: 100%;
   margin: 0px auto;
   padding: 0px auto;
-  background-color: #000;
+  background-color: #99A;
  }
 
 label {
@@ -345,7 +345,7 @@ input[type=submit].mobile {
 
 
 .background-black {
-  background-color: #000;
+  background-color: #99A;
 }
 
 .post + .post {
@@ -385,7 +385,7 @@ input[type=submit].mobile {
     text-align: right;
     right: 0px;
     bottom: 0px;
-    color: #3cf;
+    color: #000;
     font-style: italic;
     font-size: 24px;
     padding: 5px;
@@ -395,7 +395,7 @@ input[type=submit].mobile {
     text-align: right;
     right: 0px;
     bottom: 0px;
-    color: #3cf;
+    color: #000;
     font-style: italic;
     font-size: 16px;
     padding: 5px;
