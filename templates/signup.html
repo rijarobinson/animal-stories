@@ -1,6 +1,8 @@
 {% extends "base_v2.html" %}
 {% block content %}
 <form method="post">
+    <!--larger screens-->
+    <div class="hidden-xs">
     <div class="row">
         <div class="col-md-12">
             <h2>Sign Up!</h2>
@@ -42,10 +44,59 @@
             <span style="color: red">{{ error_email }}</span>
         </div>
     </div>
+</div>
+
+    <!--mobile screens-->
+    <div class="hidden-xl hidden-lg hidden-md hidden-sm">
+    <div class="row mobile">
+        <div class="col-xs-12 mobile">
+            <h2>Sign Up!</h2>
+        </div>
+    </div>
+    <div class="row mobile">
+        <div class="col-xs-4 text-right mobile">
+            <label class="mobile">Username:</label>
+        </div>
+        <div class="col-xs-7 mobile">
+            <input type="text" class="mobile" name="username" value={{ username }}>
+            <span style="color: red">{{ error_username }}</span>
+        </div>
+    </div>
+    <div class="row mobile">
+        <div class="col-xs-4 text-right mobile">
+            <label class="mobile">Password:</label>
+        </div>
+        <div class="col-xs-7 mobile">
+            <input type="password" name="password">
+            <span style="color: red">{{ error_pass }}</span>
+        </div>
+    </div>
+    <div class="row mobile">
+        <div class="col-xs-4 text-right mobile">
+            <label class="text-right mobile">Verify:</label>
+        </div>
+        <div class="col-xs-7 mobile">
+            <input type="password" name="verify">
+            <span style="color: red">{{ error_verify }}</span>
+        </div>
+    </div>
+    <div class="row mobile">
+        <div class="col-xs-4 text-right mobile">
+            <label class="text-right mobile">Email (opt):</label>
+        </div>
+        <div class="col-xs-7 mobile">
+            <input type="text" class="mobile" name="email" value={{ email }}>
+            <span style="color: red">{{ error_email }}</span>
+        </div>
+    </div>
+</div>
+
+
     <div class="row">
         <div class="col-md-12">
             <p>
                 <input type="button"
+                    class="btn"
                     name="signup"
                     value="Submit My Info"
                     alt="Submit My Info"
