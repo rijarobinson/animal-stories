@@ -133,7 +133,7 @@ input[type="button"] {
 input[type="button"].mobile {
   color: #3cf;
   background-color: #000;
-  min-height: 46px;
+  max-height: 46px;
   min-width: 46px;
   font-size: 14px;
 }
@@ -229,6 +229,10 @@ label {
   width: 100%;
 }
 
+.col-md-1.mobile {
+  padding: 3px;
+}
+
 label.mobile {
   display: block;
   font-size: 16px;
@@ -290,7 +294,7 @@ input[type=submit].mobile {
 
 .main-title.mobile {
     display: block;
-    font-size: 30px;
+    font-size: 32px;
     font-weight: bold;
     text-align: center;
     margin-bottom: 0px;
