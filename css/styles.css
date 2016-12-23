@@ -60,6 +60,7 @@ body, html {
   flex-wrap: wrap;
   justify-content: left;
   max-width: 100%;
+  margin-right: 0px;
 }
 
 /*text/paragraph styling*/
@@ -310,6 +311,8 @@ input[type=submit].mobile {
   padding: 0px;
   margin: 0px;
 }
+
+
 
 .navbar.mobile {
   padding: 0px;
