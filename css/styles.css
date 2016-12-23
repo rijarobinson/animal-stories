@@ -306,15 +306,31 @@ input[type=submit].mobile {
   margin: 0px;
 }
 
+.container-fluid.mobile {
+  padding: 0px;
+  margin: 0px;
+}
+
+.navbar.mobile {
+  padding: 0px;
+  margin: 0px;
+  border-width: 0px;
+  text-align: left;
+  width: 100%;
+}
+
+
 .main-title.mobile {
     display: block;
-    font-size: 30px;
+    font-size: 26px;
     font-weight: bold;
     text-align: left;
     margin-bottom: 0px;
     text-decoration: none;
     padding-top: 10px;
     padding-bottom: 10px;
+    padding-left: 0px;
+    vertical-align: middle;
 }
 
 .col-xs-6.mobile, .col-xs-7.mobile,

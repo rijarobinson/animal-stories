@@ -22,7 +22,7 @@
             </title>
     </head>
     <body>
-
+{% set displayLogin = 'Log in' %}
         <!--TODO: fix inconsistencies in username vs.
         current_user throughout app-->
 {% if logged_in %}
@@ -128,16 +128,29 @@
                 </div>
 
                 <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
-                    <div class="col-xs-7 mobile">
-                        <a class="header main-title mobile" href="/blog">
-                            Animal Stories
-                        </a>
-                    </div>
-                    <div class="col-xs-5 mobile text-right">
-                        {{ displayLogin }}
-                        <br>
-                        {{ displayLogoutMobile|safe }} {{ signUpButtonMobile|safe }} {{ logInButtonMobile|safe }} {{ viewPostButtonMobile|safe }}
-                    </div>
+                    <nav class="navbar mobile navbar-default">
+                      <div class="container-fluid mobile">
+                            <div class="col-xs-8 mobile">
+                                <div class="navbar-header">
+                                    <a class="navbar-brand header main-title mobile" href="/blog">Animal Stories</a>
+                                </div>
+                            </div>
+                            <div class="col-xs-4 mobile">
+                                <ul class="nav navbar-nav">
+                                    <li class="dropdown">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">{{ displayLogin }}
+                                        <span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li>{{ displayLogoutMobile|safe }}</li>
+                                            <li>{{ signUpButtonMobile|safe }}</li>
+                                            <li>{{ logInButtonMobile|safe }}</li>
+                                            <li>{{ viewPostButtonMobile|safe }}</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
                 </div>
 
         <div id="content">
