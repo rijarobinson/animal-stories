@@ -22,6 +22,7 @@
             </title>
     </head>
     <body>
+    {% set displayLogin = 'Not logged in' %}
 
         <!--TODO: fix inconsistencies in username vs.
         current_user throughout app-->
@@ -112,6 +113,7 @@
 
 
         <div class="wrapper">
+
             <div class="row lg hidden-xs">
             </div>
             <div class="container no-right">
@@ -129,15 +131,33 @@
 
                 <div class="row mobile hidden-xl hidden-lg hidden-md hidden-sm">
                     <div class="col-xs-7 mobile">
-                        <br>
                         <a class="header main-title mobile" href="/blog">
                             Animal Stories
                         </a>
                     </div>
-                    <div class="col-xs-5 mobile text-right">
-                        {{ displayLogin }}
-                        <br>
-                        {{ displayLogoutMobile|safe }} {{ signUpButtonMobile|safe }} {{ logInButtonMobile|safe }} {{ viewPostButtonMobile|safe }}
+
+
+                    <div class="col-xs-5">
+                        <div class="dropdown dropdown-menu-right">
+                          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            {{ displayLogin }}
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                            {% if displayLogoutMobile %}
+                                <li><a href="#">{{ displayLogoutMobile|safe }}</a></li>
+                            {% endif %}
+                            {% if signUpButtonMobile %}
+                                <li><a href="#">{{ signUpButtonMobile|safe }}</a></li>
+                            {% endif %}
+                            {% if logInButtonMobile %}
+                                <li><a href="#">{{ logInButtonMobile|safe }}</a></li>
+                            {% endif %}
+                            {% if viewPostButtonMobile %}
+                                <li><a href="#">{{ viewPostButtonMobile|safe }}</a></li>
+                            {% endif %}
+                          </ul>
+                        </div>
                     </div>
                 </div>
 

@@ -255,6 +255,10 @@ input[type=text] {
     background-color: #fff;
 }
 
+.dropdown-toggle {
+  margin-top: 15px;
+}
+
 input[type=text].mobile {
     width: 100%;
     font-size: 16px;
