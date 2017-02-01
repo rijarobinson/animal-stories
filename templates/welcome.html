@@ -1,7 +1,7 @@
 {% extends "base_v2.html" %}
 {% block content %}
-<div class = "row">
-    <div class = "col-md-12">
+<div class="row">
+    <div class="col-md-12">
         {% if referred == 2 %}
             <h2>
                 Welcome back, {{ username }}!<br>
@@ -13,22 +13,22 @@
         {% endif %}
     </div>
 </div>
-<div class = "row">
-    <div class = "col-md-2">
-        <form action = "/blog/newpost">
-            <input type = "hidden" name = "logged_in" value = "{{ logged_in }}">
-            <input type = "hidden" name = "poster" value = {{ username }}>
-            <input type = "button" name = "create_new_post"
-                value = "Create a New Post" OnClick="this.form.submit();">
+<div class="row">
+    <div class="col-md-2">
+        <form action="/blog/newpost">
+            <input type="hidden" name="logged_in" value="{{ logged_in }}">
+            <input type="hidden" name="poster" value={{ username }}>
+            <input type="button" class="btn" name="create_new_post"
+                value="Create a New Post" OnClick="this.form.submit();">
         </form>
     </div>
-    <div class = "col-md-2">
-        <form action = "/blog">
-            <input type = "hidden" name = "logged_in" value = "{{ logged_in }}">
-            <input type = "hidden" name = "poster" value = {{ username }}>
-            <input type = "button" name = "view_posts"
-                value = "View Posts"
-                title = "Click to View List of Posts"
+    <div class="col-md-2">
+        <form action="/blog">
+            <input type="hidden" name="logged_in" value="{{ logged_in }}">
+            <input type="hidden" name="poster" value={{ username }}>
+            <input type="button" class="btn" name="view_posts"
+                value="View Posts"
+                title="Click to View List of Posts"
                 OnClick="this.form.submit();">
         </form>
     </div>

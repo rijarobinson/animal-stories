@@ -44,6 +44,28 @@ class Wags(db.Model):
     created = db.DateTimeProperty(auto_now_add = True)
     last_modified = db.DateTimeProperty(auto_now = True)
 
+class Comments(db.Model):
+    comment_user = db.StringProperty()
+    comment_post = db.StringProperty()
+    comment_text=db.TextProperty()
+    created = db.DateTimeProperty(auto_now_add = True)
+    last_modified = db.DateTimeProperty(auto_now = True)
+
+# datastore for posts
+class Post(db.Model):
+    subject = db.StringProperty(required = True)
+    content = db.TextProperty(required = True)
+    created = db.DateTimeProperty(auto_now_add = True)
+    last_modified = db.DateTimeProperty(auto_now = True)
+    # added this field to track which posts belong to user
+    poster = db.StringProperty(required = True)
+    wags = db.IntegerProperty(default=0)
+
+# show the post page and content, replacing hard returns with html <br>
+    def render(self):
+        self._render_text = self.content.replace("\n", "<br>")
+        return render_str("post.html", p = self)
+
 class AddWag(webapp2.RequestHandler):
     def get(self):
         logged_in = self.request.cookies.get("current_user")
@@ -121,13 +143,6 @@ class DeletePost(webapp2.RequestHandler):
             self.redirect("/blog")
         else:
             self.redirect("/blog/login")
-
-class Comments(db.Model):
-    comment_user = db.StringProperty()
-    comment_post = db.StringProperty()
-    comment_text=db.TextProperty()
-    created = db.DateTimeProperty(auto_now_add = True)
-    last_modified = db.DateTimeProperty(auto_now = True)
 
 class DeleteComment(webapp2.RequestHandler):
     def get(self):
@@ -216,21 +231,6 @@ class MainPage(BlogHandler):
 # set blog key in case we decide to have additional blogs
 def blog_key(name = "default"):
     return db.Key.from_path("blogs", name)
-
-# datastore for posts
-class Post(db.Model):
-    subject = db.StringProperty(required = True)
-    content = db.TextProperty(required = True)
-    created = db.DateTimeProperty(auto_now_add = True)
-    last_modified = db.DateTimeProperty(auto_now = True)
-    # added this field to track which posts belong to user
-    poster = db.StringProperty(required = True)
-    wags = db.IntegerProperty(default=0)
-
-# show the post page and content, replacing hard returns with html <br>
-    def render(self):
-        self._render_text = self.content.replace("\n", "<br>")
-        return render_str("post.html", p = self)
 
 # front page of blog at /blog, display 10 latest posts
 class BlogFront(BlogHandler):
