@@ -105,7 +105,6 @@ img {
 }
 
 input[type="image"] {
-  border-radius: 75px;
   border: 4px solid #3cf;
   vertical-align: left;
   position: relative;

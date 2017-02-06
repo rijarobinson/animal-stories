@@ -1,5 +1,27 @@
+import os
+import re
+from string import letters
+import webapp2
+import jinja2
+
+# random, string, hashlib used for salted hashed password generation
+import random
+import string
+import hashlib
+
+
+import time
 
 from google.appengine.ext import db
+
+template_dir = os.path.join(os.path.dirname(__file__), 'templates')
+jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
+                               autoescape = True)
+
+def render_str(template, **params):
+    t = jinja_env.get_template(template)
+    return t.render(params)
+
 
 # User datastore entity
 class User(db.Model):
@@ -30,7 +52,6 @@ class Post(db.Model):
     poster = db.StringProperty(required = True)
     wags = db.IntegerProperty(default=0)
 
-# show the post page and content, replacing hard returns with html <br>
     def render(self):
         self._render_text = self.content.replace("\n", "<br>")
         return render_str("post.html", p = self)
