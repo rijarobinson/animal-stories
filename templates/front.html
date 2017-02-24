@@ -207,7 +207,7 @@
             <div id="unwag_post{{p.key().id()}}" class="row text-right">
                 <div class="col-md-12 text-right">
                     <div class="text-right">
-                        <a href="javascript:VoteDown('{{p.key().id()}}');" >You've Wagged at this Post
+                        <a class="wag" href="javascript:VoteDown('{{p.key().id()}}');" >You've Wagged at this Post
                         <br>
                         <img src="../images/wag_button_wagged.png"
                         alt="Click to Unwag" name="unwag_post"
@@ -221,7 +221,7 @@
             <div id="wag_at_post{{p.key().id()}}" class="row text-right" style="display:none;">
                 <div class="col-md-12 text-right">
                     <div class="text-right">
-                        <a href="javascript:VoteUp('{{p.key().id()}}');" >Click to Wag at this Post
+                        <a class="wag" href="javascript:VoteUp('{{p.key().id()}}');" >Click to Wag at this Post
                         <br>
                         <img src="../images/wag_button.png"
                         alt="Click to Wag at this post" name="wag_at_post"
@@ -236,7 +236,7 @@
             <div id="wag_at_post{{p.key().id()}}" class="row text-right">
                 <div class="col-md-12 text-right">
                     <div class="text-right">
-                        <a href="javascript:VoteUp('{{p.key().id()}}');" >Click to Wag at this Post
+                        <a class="wag" href="javascript:VoteUp('{{p.key().id()}}');" >Click to Wag at this Post
                         <br>
                         <img src="../images/wag_button.png"
                         alt="Click to Wag at this post" name="wag_at_post"
@@ -250,7 +250,7 @@
             <div id="unwag_post{{p.key().id()}}" class="row text-right" style="display:none;">
             <div class="col-md-12 text-right">
                 <div class="text-right">
-                    <a href="javascript:VoteDown('{{p.key().id()}}');" >You've Wagged at this Post
+                    <a class="wag" href="javascript:VoteDown('{{p.key().id()}}');" >You've Wagged at this Post
                     <br>
                     <img src="../images/wag_button_wagged.png"
                     alt="Click to Unwag" name="unwag_post"
@@ -262,58 +262,17 @@
             </div>
         {% endif %}
     {% endif %}
-    <div class="row">
+    <div class="row text-right">
         <div class="col-md-12 text-right">
             <span class="voteCount{{p.key().id()}}">
                 {% if p.wags == 1 %}
                     {{ p.wags }} Wag
                 {% else %}
-                    {{ p.wags }} Wags<br><br>
+                    {{ p.wags }} Wags
                 {% endif %}
             </span>
         </div>
     </div>
-
-    <script>
-    function VoteUp(storyKey){
-        $.ajax({
-          type: "POST",
-          url: "/blog/addwag",
-          dataType: 'json',
-          data: JSON.stringify({ "storyKey": storyKey})
-        })
-        .done(function( data ) { // check why I use done
-                        $('#wag_at_post'+data['posts']['storyKey']).hide();
-                        $('#unwag_post'+data['posts']['storyKey']).css('display','block');
-                        if (data['posts']['wags'] == 1) {
-                            $('.voteCount'+data['posts']['storyKey']).text(data['posts']['wags'] + " Wag");
-                        }
-                        else {
-                            $('.voteCount'+data['posts']['storyKey']).text(data['posts']['wags'] + " Wags");
-                        }
-        });
-    };
-
-    function VoteDown(postKey){
-        $.ajax({
-          type: "POST",
-          url: "/blog/removewag",
-          dataType: 'json',
-          data: JSON.stringify({ "postKey": postKey})
-        })
-        .done(function( data ) { // check why I use done
-                        $('#unwag_post'+data['posts']['postKey']).hide();
-                        $('#wag_at_post'+data['posts']['postKey']).css('display','block');
-                        if (data['posts']['wags'] == 1) {
-                            $('.voteCount'+data['posts']['postKey']).text(data['posts']['wags'] + ' Wag');
-                        }
-                        else {
-                            $('.voteCount'+data['posts']['postKey']).text(data['posts']['wags'] + ' Wags');
-                        }
-        });
-    };
-
-    </script>
-
+    <script type="text/javascript" src="../js/votes.js"></script>
 {% endfor %}
 {% endblock %}

@@ -198,6 +198,25 @@ a:hover {
   background-color: #3cf;
 }
 
+a.wag:link {
+  color: #000;
+  background-color: #FFF;
+  text-decoration: none;
+  text-align: left;
+}
+
+a.wag:visited {
+  background-color: #FFF;
+  color: #000;
+  text-align: left;
+}
+
+a.wag:hover {
+  color: #000;
+  background-color: #FFF;
+  text-align: left;
+}
+
 hr {
   border: none;
   height: 4px;

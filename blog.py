@@ -67,7 +67,7 @@ class RemoveWag(webapp2.RequestHandler):
         data = json.loads(self.request.body)
         unwagged_user = self.request.cookies.get("current_user")
         unwagged_post = data['postKey']
-        # in this method, unwagged user also gets the logged in user
+        # unwagged user also gets the logged in user
         if unwagged_user:
             unwag = db.GqlQuery("SELECT * from Wags WHERE wagged_post = :1 "
                 + "AND wagged_user = :2", unwagged_post, unwagged_user)
