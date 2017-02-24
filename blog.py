@@ -3,6 +3,7 @@ import re
 from string import letters
 import webapp2
 import jinja2
+import json
 
 # random, string, hashlib used for salted hashed password generation
 import random
@@ -35,22 +36,24 @@ class AddWag(webapp2.RequestHandler):
 
     def post(self):
         wagged_user = self.request.cookies.get("current_user")
-        wagged_post = self.request.get("post_key")
         logged_in = self.request.cookies.get("current_user")
         if logged_in:
+            data = json.loads(self.request.body)
+            post_to_wag = Post.get_by_id(int(data['storyKey']), parent = blog_key())
+            # post_to_wag = Post.Key(Post, data['storyKey']).get()
             p = Wags(parent = blog_key(), wagged_user = wagged_user,
-                wagged_post = wagged_post)
+                wagged_post = data['storyKey'])
             p.put()
 
     # updates wag field.
-            post_to_wag = Post.get_by_id(int(wagged_post), parent = blog_key())
             current_wags = post_to_wag.wags
             new_wags = current_wags + 1
             post_to_wag.wags = new_wags
             post_to_wag.put()
-            self.redirect("/blog#" + wagged_post)
+            self.response.out.write(json.dumps({'posts': {'wags': new_wags, 'storyKey': int(data['storyKey'])}}))
         else:
             self.redirect("/blog/login")
+
 
 class RemoveWag(webapp2.RequestHandler):
     def get(self):
@@ -61,22 +64,24 @@ class RemoveWag(webapp2.RequestHandler):
             self.redirect("/blog/login")
 
     def post(self):
+        data = json.loads(self.request.body)
         unwagged_user = self.request.cookies.get("current_user")
-        unwagged_post = self.request.get("post_key")
+        unwagged_post = data['postKey']
         # in this method, unwagged user also gets the logged in user
         if unwagged_user:
             unwag = db.GqlQuery("SELECT * from Wags WHERE wagged_post = :1 "
                 + "AND wagged_user = :2", unwagged_post, unwagged_user)
             db.delete(unwag)
-            post_to_unwag = Post.get_by_id(int(unwagged_post), parent = blog_key())
+            post_to_unwag = Post.get_by_id(int(data['postKey']), parent = blog_key())
             current_wags = post_to_unwag.wags
             new_wags = (current_wags - 1)
             post_to_unwag.wags = new_wags
             post_to_unwag.put()
-            time.sleep(0.2)
-            self.redirect("/blog#" + unwagged_post)
+            # time.sleep(0.2)
+            self.response.out.write(json.dumps({'posts': {'wags': new_wags, 'postKey': int(data['postKey'])}}))
         else:
             self.redirect("/blog/login")
+
 
 class DeletePost(webapp2.RequestHandler):
     def get(self):
