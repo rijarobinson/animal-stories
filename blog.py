@@ -20,7 +20,7 @@ import time
 
 from google.appengine.ext import db
 
-from models import User, Wags, Comments, Post, template_dir, jinja_env, render_str
+from models import User, Wags, Comments, Post, render_str
 
 
 def users_key(group = "default"):
@@ -77,7 +77,6 @@ class RemoveWag(webapp2.RequestHandler):
             new_wags = (current_wags - 1)
             post_to_unwag.wags = new_wags
             post_to_unwag.put()
-            # time.sleep(0.2)
             self.response.out.write(json.dumps({'posts': {'wags': new_wags, 'postKey': int(data['postKey'])}}))
         else:
             self.redirect("/blog/login")
