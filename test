@@ -1,1 +1,11 @@
+<!DOCTYPE html >
+<html>
+<head>
+<title>zoozoo</title>
+</head>
+<body>
 this is a text test
+<script>alert('hi');
+</script>
+</body>
+</html>
