@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html id="fc">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title>{{ config.store_name }} Cart</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+    <!--[if lt IE 9 ]>
+        <script type="text/javascript">
+            var IEElms = ['article', 'aside', 'header', 'main', 'nav', 'section'];
+            for (var i = 0; i < IEElms.length; i++) {
+                document.createElement(IEElms[i]);
+            };
+        </script>
+    <![endif]-->
+    <link href="{{ config.css_file }}" rel="stylesheet" media="screen">
+    <!-- FC script insertion -->{{ fc_header_content|raw }}<!-- /FC script insertion -->
+    <!--[if lt IE 9 ]>
+        <script src="{{ config.cdn_static_path }}scripts/respond/respond.1.4.2.js" charset="utf-8"></script>
+        <style>
+        @font-face {
+font-family: "Mucho sans webfont";
+src: url("https://uploads-ssl.webflow.com/5ce2bc490b5f0b285d27e086/5ce3cd0f575ff66dd504b890_mucho_sans_black-webfont.woff2") format("woff2");
+}
+            #fc label.fc-form-label--with-placeholder {
+                display:block !important;
+                left:0 !important;
+                width:auto !important;
+                height:50px !important;
+                clip:auto !important;
+                position:relative !important;
+                text-align:left !important;
+            }
+        </style>
+    <![endif]-->
+</head>
+<body class="fc-context--cart-fullpage" data-fc-context='{"cart_is_fullpage":true}'>
+
+    {% set cart_is_fullpage = true %}
+    <div data-fc-container="cart">
+        {% embed 'cart.inc.twig' %}
+        {% endembed %}
+    </div>
+
+
+
+    <!-- FC footer script insertion -->{% include template_from_string(fc_footer_content) %}<!-- /FC footer scripts -->
+</body>
+</html>
